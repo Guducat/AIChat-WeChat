@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "使用统计",
+  "navigationBarBackgroundColor": "#1296DB",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f8f9fa",
+  "usingComponents": {
+    "van-button": "@vant/weapp/button/index",
+    "van-dialog": "@vant/weapp/dialog/index",
+    "van-toast": "@vant/weapp/toast/index"
+  }
+}

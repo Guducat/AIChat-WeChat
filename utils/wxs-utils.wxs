@@ -1,0 +1,68 @@
+// WXS工具函数
+
+/**
+ * 格式化时间
+ */
+function formatTime(timestamp) {
+  var date = getDate(timestamp)
+  var now = getDate()
+  var diff = now.getTime() - date.getTime()
+
+  if (diff < 60000) { // 1分钟内
+    return '刚刚'
+  } else if (diff < 3600000) { // 1小时内
+    return Math.floor(diff / 60000) + '分钟前'
+  } else if (diff < 86400000) { // 1天内
+    return Math.floor(diff / 3600000) + '小时前'
+  } else if (diff < 604800000) { // 1周内
+    return Math.floor(diff / 86400000) + '天前'
+  } else {
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+    return year + '/' + month + '/' + day
+  }
+}
+
+/**
+ * 获取对话预览
+ */
+function getChatPreview(messages) {
+  if (!messages || messages.length === 0) {
+    return '暂无消息'
+  }
+  
+  var userMessages = []
+  for (var i = 0; i < messages.length; i++) {
+    if (messages[i].type === 'user') {
+      userMessages.push(messages[i])
+    }
+  }
+  
+  if (userMessages.length > 0) {
+    var preview = userMessages[0].content
+    return preview.length > 50 ? preview.substring(0, 50) + '...' : preview
+  }
+  return '暂无消息'
+}
+
+/**
+ * 格式化时间戳为可读格式
+ */
+function formatTimestamp(timestamp) {
+  var date = getDate(timestamp)
+  var hours = date.getHours()
+  var minutes = date.getMinutes()
+  
+  // 补零
+  hours = hours < 10 ? '0' + hours : hours
+  minutes = minutes < 10 ? '0' + minutes : minutes
+  
+  return hours + ':' + minutes
+}
+
+module.exports = {
+  formatTime: formatTime,
+  getChatPreview: getChatPreview,
+  formatTimestamp: formatTimestamp
+}

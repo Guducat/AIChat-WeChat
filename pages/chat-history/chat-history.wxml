@@ -1,0 +1,148 @@
+<!--pages/chat-history/chat-history.wxml-->
+<wxs module="formatter" src="./chat-history.wxs"></wxs>
+<view class="history-container">
+  <!-- 头部操作栏 -->
+  <view class="header-actions">
+    <van-button
+      size="small"
+      type="default"
+      icon="search"
+      bind:click="onToggleSearch"
+      custom-class="action-btn"
+    >
+      搜索
+    </van-button>
+    <van-button
+      size="small"
+      type="danger"
+      icon="delete"
+      bind:click="onClearAll"
+      disabled="{{isEmpty}}"
+      custom-class="action-btn"
+    >
+      清空
+    </van-button>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-container" wx:if="{{showSearch}}">
+    <van-field
+      value="{{searchKeyword}}"
+      placeholder="搜索对话记录..."
+      left-icon="search"
+      clearable
+      bind:input="onSearchInput"
+      custom-class="search-field"
+    />
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <van-loading type="spinner" size="24px" color="#3cc51f" />
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 调试信息（开发环境） -->
+  <!-- <view class="debug-info" wx:if="{{!loading}}">
+    <text>调试信息：</text>
+    <text>filteredHistory长度: {{filteredHistory.length}}</text>
+    <text>chatHistory长度: {{chatHistory.length}}</text>
+    <text>isEmpty: {{isEmpty}}</text>
+    <text>loading: {{loading}}</text>
+    <text>showSearch: {{showSearch}}</text>
+    <text>searchKeyword: {{searchKeyword}}</text>
+  </view> -->
+
+  <!-- 空状态 -->
+  <view class="empty-container" wx:if="{{!loading && (isEmpty || filteredHistory.length === 0)}}">
+    <view class="empty-icon">💬</view>
+    <text class="empty-text">
+      {{isEmpty ? '暂无对话记录' : '没有找到相关对话'}}
+    </text>
+    <text class="empty-desc">
+      {{isEmpty ? '开始您的第一次AI对话吧' : '尝试其他关键词搜索'}}
+    </text>
+    <van-button
+      wx:if="{{isEmpty}}"
+      type="primary"
+      size="small"
+      bind:click="onStartNewChat"
+      custom-class="start-chat-btn"
+    >
+      开始对话
+    </van-button>
+  </view>
+
+  <!-- 对话记录列表 -->
+  <view
+    wx:if="{{!loading && !isEmpty && filteredHistory.length > 0}}"
+    class="history-list"
+  >
+    <view
+      wx:for="{{filteredHistory}}"
+      wx:key="id"
+      class="history-item-simple"
+      bind:tap="onContinueChat"
+      data-chat-id="{{item.id}}"
+    >
+      <view class="item-content">
+        <view class="item-header">
+          <view class="chat-title">{{item.title || '无标题'}}</view>
+          <view class="chat-time">{{item.formattedTime || '无时间'}}</view>
+        </view>
+
+        <view class="item-body">
+          <view class="chat-preview">{{formatter.formatMessageCount(item.messages)}} 条消息</view>
+          <view class="chat-meta">
+            <text class="tag">{{item.scenarioName || '无场景'}}</text>
+            <text class="tag">{{item.modelName || '无模型'}}</text>
+            <!-- 多模态标识 -->
+            <text
+              wx:if="{{item.hasImages}}"
+              class="tag multimodal"
+            >
+              📷 图文
+            </text>
+          </view>
+        </view>
+
+        <view class="item-footer">
+          <view class="chat-stats">
+            <text class="stat-item">{{formatter.formatMessageCount(item.messages)}} 条消息</text>
+            <text class="stat-item">{{formatter.formatTokens(item.totalTokens)}} tokens</text>
+            <text class="stat-item">¥{{formatter.formatCost(item.totalCost)}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 简化的操作按钮 -->
+      <view class="item-actions">
+        <view
+          class="action-btn"
+          bind:tap="onDeleteChat"
+          data-chat-id="{{item.id}}"
+          data-title="{{item.title}}"
+          data-index="{{index}}"
+          catch:tap="true"
+        >
+          删除
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 删除确认弹窗 -->
+<van-dialog
+  show="{{showDeleteConfirm}}"
+  title="确认删除"
+  message="{{deleteConfirmMessage}}"
+  show-cancel-button
+  confirm-button-text="删除"
+  confirm-button-color="#ee0a24"
+  bind:confirm="onConfirmDelete"
+  bind:cancel="onCancelDelete"
+/>
+
+<!-- Toast组件 -->
+<van-toast id="van-toast" />

@@ -1,0 +1,239 @@
+/* pages/stats/stats.wxss */
+.stats-container {
+  padding: 16px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* 头部样式 */
+.stats-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.header-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.header-subtitle {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 统计卡片样式 */
+.stats-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
+  border-left: 4px solid #1296DB;
+  padding-left: 12px;
+}
+
+/* 总体统计网格 */
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #1296DB;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.last-updated {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+/* 每日统计样式 */
+.daily-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.daily-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.daily-date {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  min-width: 60px;
+}
+
+.daily-info {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #666;
+}
+
+.daily-tokens {
+  color: #1296DB;
+  font-weight: bold;
+}
+
+.daily-cost {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* 每月统计样式 */
+.monthly-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.monthly-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.monthly-month {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  min-width: 60px;
+}
+
+.monthly-info {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #666;
+}
+
+.monthly-tokens {
+  color: #1296DB;
+  font-weight: bold;
+}
+
+.monthly-cost {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* 文件记录样式 */
+.file-records {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.file-item:active {
+  background: #e9ecef;
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-name {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.file-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.file-type {
+  font-size: 12px;
+  color: #1296DB;
+  background: rgba(18, 150, 219, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* 操作按钮样式 */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  flex: 1;
+  min-width: 100px !important;
+  height: 40px !important;
+  border-radius: 20px !important;
+}
+
+/* 空状态样式 */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-text {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.empty-desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}

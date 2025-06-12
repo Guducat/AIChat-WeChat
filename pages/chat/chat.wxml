@@ -1,0 +1,250 @@
+<!--pages/chat/chat.wxml-->
+<wxs module="timeFormatter" src="../../utils/time-formatter.wxs"></wxs>
+
+<view class="chat-container" id="chat-container">
+  <!-- 头部信息栏 -->
+  <view class="chat-header">
+    <view class="chat-info">
+      <view class="model-info">
+        <text class="model-name">{{currentModel.name}}</text>
+        <text class="scenario-name">{{currentScenario.name}}</text>
+      </view>
+      <view class="token-info" bind:tap="onToggleTokenInfo">
+        <van-icon name="info-o" size="16px" color="#666" />
+        <text class="token-text">{{timeFormatter.formatTokens(totalTokens)}}</text>
+      </view>
+      <view class="stats-btn" bind:tap="onGoToStats">
+        <van-icon name="chart-trending-o" size="16px" color="#1296DB" />
+      </view>
+    </view>
+
+    <!-- Token详情 -->
+    <view class="token-detail" wx:if="{{showTokenInfo}}">
+      <view class="token-item">
+        <text class="label">总Token数:</text>
+        <text class="value">{{timeFormatter.formatTokens(totalTokens)}}</text>
+      </view>
+      <view class="token-item" wx:if="{{totalPromptTokens > 0}}">
+        <text class="label">输入Token:</text>
+        <text class="value">{{timeFormatter.formatTokens(totalPromptTokens)}}</text>
+      </view>
+      <view class="token-item" wx:if="{{totalCompletionTokens > 0}}">
+        <text class="label">输出Token:</text>
+        <text class="value">{{timeFormatter.formatTokens(totalCompletionTokens)}}</text>
+      </view>
+      <view class="token-item">
+        <text class="label">精确费用:</text>
+        <text class="value">{{timeFormatter.formatCost(totalCost)}}</text>
+      </view>
+      <view class="token-item">
+        <text class="label">输入单价:</text>
+        <text class="value">{{timeFormatter.formatCost(currentModel.pricePerInputToken || currentModel.pricePerToken || '0.00014')}}/token</text>
+      </view>
+      <view class="token-item">
+        <text class="label">输出单价:</text>
+        <text class="value">{{timeFormatter.formatCost(currentModel.pricePerOutputToken || currentModel.pricePerToken || '0.00028')}}/token</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 消息列表 -->
+  <scroll-view
+    class="message-list"
+    scroll-y="true"
+    scroll-top="{{scrollTop}}"
+    scroll-with-animation="true"
+  >
+    <view
+      wx:for="{{messages}}"
+      wx:key="id"
+      class="message-item {{item.type}}"
+    >
+      <!-- 用户消息 -->
+      <view wx:if="{{item.type === 'user'}}" class="user-message">
+        <view class="message-content">
+          <!-- 文件展示 -->
+          <view class="message-files" wx:if="{{item.files && item.files.length > 0}}">
+            <view
+              wx:for="{{item.files}}"
+              wx:for-item="file"
+              wx:key="fileId"
+              class="file-item"
+            >
+              <image
+                class="file-image"
+                src="{{file.fileUrl}}"
+                mode="aspectFill"
+                bind:tap="onPreviewImage"
+                data-url="{{file.fileUrl}}"
+                data-urls="{{item.fileUrls}}"
+              />
+            </view>
+          </view>
+
+          <!-- 文本内容 -->
+          <text class="message-text" wx:if="{{item.content}}">{{item.content}}</text>
+
+          <view class="message-meta">
+            <text class="timestamp">{{timeFormatter.formatChatTime(item.timestamp)}}</text>
+            <text class="tokens" wx:if="{{item.tokens}}">{{timeFormatter.formatTokens(item.tokens)}}</text>
+          </view>
+        </view>
+        <view class="avatar user-avatar">
+          <image
+            wx:if="{{userInfo.avatarUrl}}"
+            class="avatar-image"
+            src="{{userInfo.avatarUrl}}"
+            mode="aspectFill"
+            bind:error="onAvatarError"
+          />
+          <image
+            wx:else
+            class="avatar-image"
+            src="/images/default-avatar.png"
+            mode="aspectFill"
+          />
+        </view>
+      </view>
+
+      <!-- AI消息 -->
+      <view wx:else class="ai-message">
+        <view class="avatar ai-avatar">🤖</view>
+        <view class="message-content">
+          <!-- 思考过程（如果存在） -->
+          <view wx:if="{{item.reasoningContent && item.reasoningContent.length > 0}}" class="reasoning-section">
+            <van-collapse
+              value="{{item.reasoningExpanded ? ['reasoning'] : []}}"
+              bind:change="onReasoningToggle"
+              data-message-id="{{item.id}}"
+              custom-class="reasoning-collapse"
+            >
+              <van-collapse-item
+                title="💭 思考过程"
+                name="reasoning"
+                custom-class="reasoning-collapse-item"
+              >
+                <text class="reasoning-text">{{item.reasoningContent}}</text>
+              </van-collapse-item>
+            </van-collapse>
+          </view>
+
+          <!-- 最终回答 -->
+          <view wx:if="{{item.content && item.content.length > 0}}" class="answer-section">
+            <towxml wx:if="{{item.contentNodes}}" nodes="{{item.contentNodes}}" />
+            <text wx:else class="message-text">{{item.content}}</text>
+          </view>
+
+          <van-loading
+            wx:if="{{item.isStreaming}}"
+            type="spinner"
+            size="14px"
+            color="#1296DB"
+            custom-class="streaming-loading"
+          />
+          <view class="message-meta" wx:if="{{!item.isStreaming}}">
+            <text class="timestamp">{{timeFormatter.formatChatTime(item.timestamp)}}</text>
+            <text class="tokens" wx:if="{{item.tokens}}">{{timeFormatter.formatTokens(item.tokens)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 状态提示 -->
+    <view class="status-tip" wx:if="{{chatStatus !== 'idle'}}">
+      <van-loading
+        wx:if="{{chatStatus === 'sending'}}"
+        type="spinner"
+        size="16px"
+        color="#1296DB"
+      />
+      <text class="status-text">{{statusText}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <!-- 图片上传预览区域 -->
+    <view class="upload-preview" wx:if="{{uploadedFiles.length > 0}}">
+      <view class="preview-title">已上传的图片：</view>
+      <view class="file-list">
+        <view
+          wx:for="{{uploadedFiles}}"
+          wx:key="fileId"
+          class="file-item"
+        >
+          <image
+            class="file-image"
+            src="{{item.fileUrl}}"
+            mode="aspectFill"
+            bind:tap="onPreviewUploadedImage"
+            data-url="{{item.fileUrl}}"
+            data-urls="{{uploadedFileUrls}}"
+          />
+          <view
+            class="delete-btn"
+            bind:tap="onDeleteUploadedFile"
+            data-index="{{index}}"
+          >
+            <van-icon name="cross" size="12px" color="#fff" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="input-container">
+      <van-field
+        model:value="{{inputText}}"
+        placeholder="输入您的问题..."
+        border="{{false}}"
+        bind:change="onInputChange"
+        type="textarea"
+        autosize="{{true}}"
+        maxlength="1000"
+        show-word-limit
+        custom-class="chat-input"
+      />
+      <view class="input-actions">
+        <van-button
+          icon="photograph"
+          size="small"
+          type="default"
+          bind:click="onChooseImage"
+          disabled="{{isUploading || uploadedFiles.length >= 9 || uploadDisabled}}"
+          custom-class="upload-btn {{uploadDisabled ? 'upload-btn-disabled' : ''}}"
+        >
+          {{uploadButtonText}}
+        </van-button>
+        <van-button
+          size="small"
+          type="default"
+          bind:click="onClearChat"
+          custom-class="action-btn"
+        >
+          清空
+        </van-button>
+        <van-button
+          size="small"
+          type="primary"
+          bind:click="onSendMessage"
+          disabled="{{sendDisabled}}"
+          loading="{{isUploading}}"
+          custom-class="send-btn"
+        >
+          发送
+        </van-button>
+      </view>
+
+      <!-- 上传功能禁用提示 -->
+      <view class="upload-disabled-tip" wx:if="{{uploadDisabled}}">
+        <van-icon name="info-o" size="12px" color="#999" />
+        <text class="tip-text">{{uploadDisabledReason}}</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- Toast组件 -->
+<van-toast id="van-toast" />
+
+<!-- Dialog组件 -->
+<van-dialog id="van-dialog" />

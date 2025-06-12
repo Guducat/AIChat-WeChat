@@ -1,0 +1,97 @@
+// pages/chat-history/chat-history.wxs
+// 微信小程序WXS文件，用于处理数据格式化
+
+/**
+ * 格式化费用显示
+ * @param {number} cost 费用数值
+ * @returns {string} 格式化后的费用字符串
+ */
+function formatCost(cost) {
+  if (!cost || cost === 0) {
+    return '0.000000'
+  }
+  
+  // 确保是数字类型
+  var numCost = parseFloat(cost)
+  if (isNaN(numCost)) {
+    return '0.000000'
+  }
+  
+  // 格式化为6位小数
+  return numCost.toFixed(6)
+}
+
+/**
+ * 格式化Token数量
+ * @param {number} tokens Token数量
+ * @returns {string} 格式化后的Token字符串
+ */
+function formatTokens(tokens) {
+  if (!tokens || tokens === 0) {
+    return '0'
+  }
+
+  var numTokens = parseInt(tokens)
+  if (isNaN(numTokens)) {
+    return '0'
+  }
+
+  // 简单的千分位分隔符处理（WXS不支持正则表达式）
+  var str = numTokens.toString()
+  var result = ''
+  var count = 0
+
+  for (var i = str.length - 1; i >= 0; i--) {
+    if (count > 0 && count % 3 === 0) {
+      result = ',' + result
+    }
+    result = str.charAt(i) + result
+    count++
+  }
+
+  return result
+}
+
+/**
+ * 格式化消息数量
+ * @param {Array} messages 消息数组
+ * @returns {string} 格式化后的消息数量
+ */
+function formatMessageCount(messages) {
+  if (!messages || !messages.length) {
+    return '0'
+  }
+  
+  return messages.length.toString()
+}
+
+/**
+ * 检查数值是否有效
+ * @param {any} value 要检查的值
+ * @returns {boolean} 是否为有效数值
+ */
+function isValidNumber(value) {
+  return value !== null && value !== undefined && !isNaN(parseFloat(value))
+}
+
+/**
+ * 安全的数值转换
+ * @param {any} value 要转换的值
+ * @param {number} defaultValue 默认值
+ * @returns {number} 转换后的数值
+ */
+function safeNumber(value, defaultValue) {
+  if (isValidNumber(value)) {
+    return parseFloat(value)
+  }
+  return defaultValue || 0
+}
+
+// 导出函数供WXML使用
+module.exports = {
+  formatCost: formatCost,
+  formatTokens: formatTokens,
+  formatMessageCount: formatMessageCount,
+  isValidNumber: isValidNumber,
+  safeNumber: safeNumber
+}

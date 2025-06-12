@@ -1,0 +1,36 @@
+/**app.wxss**/
+/* 全局主题色定义 */
+page {
+  --primary-color: #1296DB;
+  --primary-color-light: #E3F2FD;
+  --primary-color-dark: #0D7AC4;
+  --primary-gradient: linear-gradient(135deg, #1296DB 0%, #0D7AC4 100%);
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+}
+
+/* 全局通用样式 */
+.primary-button {
+  background: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.primary-text {
+  color: var(--primary-color) !important;
+}
+
+.primary-bg {
+  background: var(--primary-color) !important;
+}
+
+.primary-gradient-bg {
+  background: var(--primary-gradient) !important;
+}

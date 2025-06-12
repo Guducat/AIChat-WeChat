@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "AI对话",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#f8f9fa",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "towxml":"/towxml/towxml"
+  }
+}

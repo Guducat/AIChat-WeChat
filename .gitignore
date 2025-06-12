@@ -1,0 +1,10 @@
+/.idea/
+/docs/
+/node_modules/
+/miniprogram_npm/
+/test/
+/package-lock.json
+/utils/multimodal-test.js
+/utils/api-test.js
+/pages/multimodal-test/
+/CHANGELOG.md

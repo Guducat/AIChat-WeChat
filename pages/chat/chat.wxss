@@ -1,0 +1,562 @@
+/* pages/chat/chat.wxss */
+
+
+/*towxml样式*/
+.h2w {
+  font-family: '' !important;
+  font-size: 14px !important;
+}
+
+/* 图片上传预览样式 */
+.upload-preview {
+  margin: 16px;
+  margin-bottom: 8px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.preview-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.file-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.file-image {
+  width: 100%;
+  height: 100%;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* 头部信息栏 */
+.chat-header {
+  background: white;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.chat-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.model-info {
+  flex: 1;
+}
+
+.model-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  display: block;
+}
+
+.scenario-name {
+  font-size: 12px;
+  color: #666;
+  display: block;
+  margin-top: 2px;
+}
+
+.token-info {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.token-text {
+  font-size: 12px;
+  color: #666;
+  margin-left: 4px;
+}
+
+.stats-btn {
+  margin-left: 8px;
+  padding: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.stats-btn:active {
+  background: #f0f0f0;
+}
+
+.token-detail {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.token-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.token-item:last-child {
+  margin-bottom: 0;
+}
+
+.token-item .label {
+  font-size: 12px;
+  color: #666;
+}
+
+.token-item .value {
+  font-size: 12px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* 消息列表 */
+.message-list {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.message-item {
+  margin-bottom: 16px;
+}
+
+/* 用户消息 */
+.user-message {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.user-message .message-content {
+  max-width: 70%;
+  background: var(--primary-color);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 18px 18px 4px 18px;
+  margin-right: 8px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-right: 20px;
+  overflow: hidden;
+}
+
+.user-avatar .avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+}
+
+/* AI消息 */
+.ai-message {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.ai-message .message-content {
+  max-width: 70%;
+  background: white;
+  color: #333;
+  padding: 12px 16px;
+  border-radius: 18px 18px 18px 4px;
+  margin-left: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.ai-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.message-text {
+  font-size: 14px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* 消息文件 */
+.message-files {
+  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.message-files .file-item {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.message-files .file-image {
+  width: 100%;
+  height: 100%;
+}
+
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.streaming-loading {
+  margin-top: 8px;
+}
+
+/* 状态提示 */
+.status-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  margin: 8px 0;
+}
+
+.status-text {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 输入区域 */
+.input-area {
+  background: white;
+  border-top: 1px solid #eee;
+  padding: 12px 16px 46px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-input {
+  background: #f8f9fa !important;
+  border-radius: 20px !important;
+  padding: 8px 16px !important;
+  margin-bottom: 8px;
+  min-height: 40px;
+  max-height: 120px;
+}
+
+.input-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.upload-btn {
+  min-width: 80px !important;
+  height: 32px !important;
+  border-radius: 16px !important;
+  background: #f0f0f0 !important;
+  color: #666 !important;
+}
+
+.upload-btn-disabled {
+  background: #f5f5f5 !important;
+  color: #ccc !important;
+  border-color: #e0e0e0 !important;
+}
+
+.upload-disabled-tip {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #ffa500;
+}
+
+.upload-disabled-tip .tip-text {
+  font-size: 12px;
+  color: #666;
+  margin-left: 6px;
+  line-height: 1.4;
+}
+
+.action-btn {
+  min-width: 60px !important;
+  height: 32px !important;
+  border-radius: 16px !important;
+}
+
+.send-btn {
+  min-width: 60px !important;
+  height: 32px !important;
+  border-radius: 16px !important;
+}
+
+/* 思考过程折叠面板样式 */
+.reasoning-section {
+  margin-bottom: 12px;
+}
+
+.reasoning-collapse {
+  background: transparent !important;
+  border: none !important;
+}
+
+.reasoning-collapse-item {
+  background: #f8f9fa !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.reasoning-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  padding: 8px 0;
+}
+
+/* towxml在思考过程中的样式 */
+.reasoning-collapse-item towxml {
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  color: #666 !important;
+}
+
+.reasoning-collapse-item towxml .h1,
+.reasoning-collapse-item towxml .h2,
+.reasoning-collapse-item towxml .h3,
+.reasoning-collapse-item towxml .h4,
+.reasoning-collapse-item towxml .h5,
+.reasoning-collapse-item towxml .h6 {
+  font-size: 14px !important;
+  color: #555 !important;
+  margin: 8px 0 4px 0 !important;
+}
+
+.reasoning-collapse-item towxml .p {
+  margin: 4px 0 !important;
+  color: #666 !important;
+}
+
+.reasoning-collapse-item towxml .code {
+  background: #f0f0f0 !important;
+  color: #333 !important;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+  font-size: 12px !important;
+}
+
+.reasoning-collapse-item towxml .pre {
+  background: #f8f8f8 !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  padding: 8px !important;
+  margin: 8px 0 !important;
+  overflow-x: auto !important;
+}
+
+/* 折叠面板标题样式 */
+.reasoning-collapse-item .van-collapse-item__title {
+  font-size: 13px !important;
+  color: #666 !important;
+  font-weight: normal !important;
+}
+
+.reasoning-collapse-item .van-collapse-item__content {
+  padding: 12px 16px !important;
+  background: #fafbfc !important;
+}
+
+/* 最终回答区域样式 */
+.answer-section {
+  margin-top: 8px;
+}
+
+/* towxml在AI消息中的样式适配 */
+.ai-message towxml {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: #333 !important;
+  word-wrap: break-word !important;
+}
+
+/* towxml标题样式 */
+.ai-message towxml .h1,
+.ai-message towxml .h2,
+.ai-message towxml .h3,
+.ai-message towxml .h4,
+.ai-message towxml .h5,
+.ai-message towxml .h6 {
+  font-weight: bold !important;
+  color: #1296DB !important;
+  margin: 12px 0 8px 0 !important;
+}
+
+.ai-message towxml .h1 { font-size: 18px !important; }
+.ai-message towxml .h2 { font-size: 16px !important; }
+.ai-message towxml .h3 { font-size: 15px !important; }
+.ai-message towxml .h4,
+.ai-message towxml .h5,
+.ai-message towxml .h6 { font-size: 14px !important; }
+
+/* towxml段落样式 */
+.ai-message towxml .p {
+  margin: 8px 0 !important;
+  color: #333 !important;
+  line-height: 1.6 !important;
+}
+
+/* towxml强调文本样式 */
+.ai-message towxml .strong {
+  font-weight: bold !important;
+  color: #1296DB !important;
+}
+
+.ai-message towxml .em {
+  font-style: italic !important;
+  color: #666 !important;
+}
+
+/* towxml代码样式 */
+.ai-message towxml .code {
+  background: #f5f5f5 !important;
+  color: #e74c3c !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+/* towxml代码块样式 */
+.ai-message towxml .pre {
+  background: #f8f9fa !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+  margin: 12px 0 !important;
+  overflow-x: auto !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+.ai-message towxml .pre .code {
+  background: transparent !important;
+  color: #333 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* towxml列表样式 */
+.ai-message towxml .ul,
+.ai-message towxml .ol {
+  margin: 8px 0 !important;
+  padding-left: 20px !important;
+}
+
+.ai-message towxml .li {
+  margin: 4px 0 !important;
+  color: #333 !important;
+}
+
+/* towxml引用样式 */
+.ai-message towxml .blockquote {
+  border-left: 4px solid #1296DB !important;
+  background: #f8f9fa !important;
+  padding: 8px 12px !important;
+  margin: 12px 0 !important;
+  color: #666 !important;
+  font-style: italic !important;
+}
+
+/* towxml链接样式 */
+.ai-message towxml .a {
+  color: #1296DB !important;
+  text-decoration: underline !important;
+}
+
+/* towxml表格样式 */
+.ai-message towxml .table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 12px 0 !important;
+}
+
+.ai-message towxml .th,
+.ai-message towxml .td {
+  border: 1px solid #dee2e6 !important;
+  padding: 8px !important;
+  text-align: left !important;
+}
+
+.ai-message towxml .th {
+  background: #f8f9fa !important;
+  font-weight: bold !important;
+}
+
+/* 主题色变量 */
+:root {
+  --primary-color: #1296DB;
+}

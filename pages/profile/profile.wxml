@@ -1,0 +1,307 @@
+<!--pages/profile/profile.wxml-->
+<view class="profile-container">
+  <!-- 用户信息区域 -->
+  <view class="user-section">
+    <view class="user-info">
+      <image
+        class="avatar"
+        src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"
+        mode="aspectFill"
+      />
+      <view class="user-details">
+        <text class="nickname">{{userInfo.nickName || '用户'}}</text>
+        <text class="login-status">{{isLoggedIn ? ' ' : '未登录'}}</text>
+      </view>
+
+      <!-- 登录/登出按钮 -->
+      <view class="login-action">
+        <van-button
+          wx:if="{{!isLoggedIn}}"
+          type="primary"
+          size="small"
+          bind:click="onLogin"
+          custom-class="login-btn"
+        >
+          登录
+        </van-button>
+        <van-button
+          wx:else
+          type="default"
+          size="small"
+          bind:click="onLogout"
+          custom-class="logout-btn"
+        >
+          登出
+        </van-button>
+      </view>
+    </view>
+
+    <!-- 统计信息 -->
+    <view class="statistics">
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.totalChats}}</text>
+        <text class="stat-label">对话数</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.totalTokens}}</text>
+        <text class="stat-label">总Token</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-value">¥{{statistics.totalCost}}</text>
+        <text class="stat-label">总费用</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- API配置区域 -->
+  <view class="api-section">
+    <view class="section-title">API配置</view>
+
+    <van-cell-group>
+      <van-cell
+        title="SiliconFlow API Key"
+        icon="key-o"
+        value="{{apiKeyStatus}}"
+        label="{{hasApiKey ? apiKeyMasked : '配置后可使用真实AI对话'}}"
+        is-link
+        bind:click="onShowApiKeyDialog"
+      />
+
+      <van-cell
+        wx:if="{{hasApiKey}}"
+        title="测试API连接"
+        icon="play-circle-o"
+        is-link
+        bind:click="onTestApiKey"
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 设置区域 -->
+  <view class="settings-section">
+    <view class="section-title">应用设置</view>
+
+    <van-cell-group>
+      <van-cell
+        title="自动保存对话"
+        icon="bookmark-o"
+      >
+        <van-switch
+          slot="right-icon"
+          checked="{{settings.autoSave}}"
+          bind:change="onToggleSetting"
+          data-key="autoSave"
+          size="20px"
+        />
+      </van-cell>
+
+      <van-cell
+        title="显示Token计数"
+        icon="info-o"
+      >
+        <van-switch
+          slot="right-icon"
+          checked="{{settings.showTokenCount}}"
+          bind:change="onToggleSetting"
+          data-key="showTokenCount"
+          size="20px"
+        />
+      </van-cell>
+
+      <!-- <van-cell
+        title="主题设置"
+        icon="setting-o"
+        value="{{settings.theme === 'light' ? '浅色' : settings.theme === 'dark' ? '深色' : '跟随系统'}}"
+        is-link
+        bind:click="onShowThemeSelector"
+      /> -->
+    </van-cell-group>
+  </view>
+
+  <!-- 功能区域 -->
+  <view class="function-section">
+    <view class="section-title">更多功能</view>
+
+    <van-cell-group>
+      <van-cell
+        title="隐私政策"
+        icon="shield-o"
+        is-link
+        bind:click="onViewPrivacyPolicy"
+      />
+
+      <van-cell
+        title="意见反馈"
+        icon="chat-o"
+        is-link
+        bind:click="onFeedback"
+      />
+
+      <van-cell
+        title="关于我们"
+        icon="info-o"
+        is-link
+        bind:click="onAbout"
+      />
+
+      <van-cell
+        title="分享应用"
+        icon="share-o"
+        is-link
+        bind:click="onClickShareAppMessage"
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="data-section">
+    <view class="section-title">数据管理</view>
+
+    <van-cell-group>
+      <van-cell
+        title="清空所有数据"
+        icon="delete-o"
+        is-link
+        bind:click="onClearData"
+        title-class="danger-text"
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text class="version-text">AI对话助手 v1.0.0</text>
+    <text class="copyright">© 2025 Guducat</text>
+  </view>
+</view>
+
+<!-- 主题选择弹窗 -->
+<van-popup
+  show="{{showThemeSelector}}"
+  position="bottom"
+  bind:close="onCancelThemeSelect"
+  closeable
+  round
+>
+  <view class="theme-selector">
+    <view class="selector-header">
+      <text class="selector-title">选择主题</text>
+    </view>
+    <view class="theme-list">
+      <view
+        wx:for="{{themeOptions}}"
+        wx:key="value"
+        class="theme-item {{settings.theme === item.value ? 'selected' : ''}}"
+        bind:tap="onSelectTheme"
+        data-value="{{index}}"
+      >
+        <text class="theme-label">{{item.label}}</text>
+        <van-icon
+          wx:if="{{settings.theme === item.value}}"
+          name="success"
+          color="#3cc51f"
+          size="20px"
+        />
+      </view>
+    </view>
+  </view>
+</van-popup>
+
+<!-- API Key配置对话框 -->
+<van-popup
+  show="{{showApiKeyDialog}}"
+  position="center"
+  bind:close="onCloseApiKeyDialog"
+  closeable="{{true}}"
+  close-icon="close"
+  round="{{true}}"
+  overlay="{{true}}"
+  overlay-style="background: rgba(0,0,0,0.5);"
+  custom-style="width: 90%; max-width: 420px; border-radius: 16px; overflow: hidden;"
+  transition="fade"
+  duration="300"
+>
+  <view class="api-key-dialog">
+    <view class="dialog-header">
+      <text class="dialog-title">配置SiliconFlow API Key</text>
+      <text class="dialog-subtitle">配置后可使用真实AI模型进行对话</text>
+    </view>
+
+    <view class="dialog-content">
+      <view class="input-section">
+        <view class="input-wrapper">
+          <input
+            class="api-key-input"
+            value="{{apiKeyInput}}"
+            placeholder="请输入以sk-开头的API密钥"
+            type="{{showApiKeyInput ? 'text' : 'password'}}"
+            bindinput="onApiKeyInput"
+            bindblur="onApiKeyChange"
+            maxlength="200"
+            confirm-type="done"
+            cursor-spacing="20"
+            placeholder-style="color: #999; font-size: 14px;"
+          />
+          <view class="input-actions">
+            <van-button
+              icon="{{showApiKeyInput ? 'closed-eye' : 'eye-o'}}"
+              type="default"
+              size="mini"
+              bind:click="onToggleApiKeyInput"
+              custom-class="toggle-btn"
+            >
+              {{showApiKeyInput ? '隐藏' : '显示'}}
+            </van-button>
+          </view>
+        </view>
+      </view>
+
+      <view class="tips">
+        <view class="tip-item">
+          <van-icon name="info-o" size="14px" color="#999" />
+          <text class="tip-text">API Key将加密存储在本地，不会上传到服务器</text>
+        </view>
+        <view class="tip-item">
+          <van-icon name="info-o" size="14px" color="#999" />
+          <text class="tip-text">获取API Key：访问 siliconflow.cn 注册并创建</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="dialog-actions">
+      <van-button
+        type="default"
+        size="large"
+        bind:click="onCloseApiKeyDialog"
+        custom-class="cancel-btn"
+      >
+        取消
+      </van-button>
+      <van-button
+        type="primary"
+        size="large"
+        bind:click="onSaveApiKey"
+        custom-class="save-btn"
+      >
+        保存
+      </van-button>
+      <van-button
+        wx:if="{{hasApiKey}}"
+        type="danger"
+        size="large"
+        bind:click="onClearApiKey"
+        custom-class="clear-btn"
+      >
+        清除
+      </van-button>
+    </view>
+  </view>
+</van-popup>
+
+<!-- Toast组件 -->
+<van-toast id="van-toast" />
+
+<!-- Dialog组件 -->
+<van-dialog id="van-dialog" />

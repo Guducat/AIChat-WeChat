@@ -1,0 +1,79 @@
+<!--pages/login/login.wxml-->
+<view class="login-container">
+  <!-- 登录内容 -->
+  <view class="login-content">
+    <!-- Logo区域 -->
+    <view class="logo-section">
+      <view class="logo">🤖</view>
+      <text class="app-name">AI对话助手</text>
+      <text class="app-desc">智能对话，随时随地</text>
+    </view>
+
+    <!-- 用户信息填写 -->
+    <view class="user-info-section">
+      <!-- 头像选择 -->
+      <view class="avatar-section">
+        <text class="section-label">选择头像</text>
+        <button
+          class="avatar-wrapper"
+          open-type="chooseAvatar"
+          bind:chooseavatar="onChooseAvatar"
+        >
+          <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+          <view class="avatar-mask">
+            <van-icon name="photograph" size="24px" color="white" />
+          </view>
+        </button>
+      </view>
+
+      <!-- 昵称填写 -->
+      <view class="nickname-section">
+        <input
+          type="nickname"
+          class="nickname-input"
+          placeholder="请输入昵称"
+          value="{{userInfo.nickName}}"
+          bind:input="onInputChange"
+          maxlength="20"
+        />
+      </view>
+    </view>
+
+    <!-- 登录方式 -->
+    <view class="login-methods">
+      <!-- 微信登录 -->
+      <van-button
+        type="primary"
+        size="large"
+        bind:click="onWechatLogin"
+        disabled="{{isLoading}}"
+        loading="{{isLoading}}"
+        custom-class="login-btn wechat-btn"
+      >
+        完成登录
+      </van-button>
+
+      <!-- 游客登录 -->
+      <van-button
+        type="default"
+        size="large"
+        bind:click="onGuestLogin"
+        disabled="{{isLoading}}"
+        custom-class="login-btn guest-btn"
+      >
+        游客登录
+      </van-button>
+    </view>
+
+    <!-- 登录说明 -->
+    <view class="login-tips">
+      <text class="tip-text">登录即表示同意</text>
+      <text class="link-text">《用户协议》</text>
+      <text class="tip-text">和</text>
+      <text class="link-text">《隐私政策》</text>
+    </view>
+  </view>
+</view>
+
+<!-- Toast组件 -->
+<van-toast id="van-toast" />

@@ -1,0 +1,249 @@
+// 时间格式化工具 - WXS版本
+// 用于在WXML中格式化时间戳显示
+
+/**
+ * 格式化聊天消息时间
+ * @param {string} timestamp ISO时间戳字符串
+ * @returns {string} 格式化后的时间字符串
+ */
+function formatChatTime(timestamp) {
+  if (!timestamp) return ''
+  
+  try {
+    var date = getDate(timestamp)
+    var now = getDate()
+    
+    // 判断是否为今天
+    if (isToday(date, now)) {
+      return formatTimeOnly(date)
+    }
+    
+    // 判断是否为昨天
+    if (isYesterday(date, now)) {
+      return '昨天 ' + formatTimeOnly(date)
+    }
+    
+    // 判断是否为本年
+    if (isThisYear(date, now)) {
+      return (date.getMonth() + 1) + '月' + date.getDate() + '日 ' + formatTimeOnly(date)
+    }
+    
+    // 跨年显示
+    return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
+    
+  } catch (e) {
+    console.log('时间格式化错误:', e)
+    return timestamp
+  }
+}
+
+/**
+ * 格式化相对时间
+ * @param {string} timestamp ISO时间戳字符串
+ * @returns {string} 相对时间字符串
+ */
+function formatRelativeTime(timestamp) {
+  if (!timestamp) return ''
+  
+  try {
+    var date = getDate(timestamp)
+    var now = getDate()
+    var diff = now.getTime() - date.getTime()
+    
+    // 1分钟内
+    if (diff < 60000) {
+      return '刚刚'
+    }
+    
+    // 1小时内
+    if (diff < 3600000) {
+      var minutes = Math.floor(diff / 60000)
+      return minutes + '分钟前'
+    }
+    
+    // 今天内
+    if (isToday(date, now)) {
+      var hours = Math.floor(diff / 3600000)
+      if (hours < 24) {
+        return hours + '小时前'
+      }
+    }
+    
+    // 昨天
+    if (isYesterday(date, now)) {
+      return '昨天 ' + formatTimeOnly(date)
+    }
+    
+    // 本周内
+    if (isThisWeek(date, now)) {
+      var weekday = getWeekdayName(date)
+      return weekday + ' ' + formatTimeOnly(date)
+    }
+    
+    // 超过一周，显示日期
+    if (isThisYear(date, now)) {
+      return (date.getMonth() + 1) + '月' + date.getDate() + '日'
+    }
+    
+    return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
+    
+  } catch (e) {
+    console.log('相对时间格式化错误:', e)
+    return timestamp
+  }
+}
+
+/**
+ * 判断是否为今天
+ */
+function isToday(date, now) {
+  return date.getFullYear() === now.getFullYear() &&
+         date.getMonth() === now.getMonth() &&
+         date.getDate() === now.getDate()
+}
+
+/**
+ * 判断是否为昨天
+ */
+function isYesterday(date, now) {
+  var yesterday = getDate(now.getTime() - 86400000) // 减去一天的毫秒数
+  return date.getFullYear() === yesterday.getFullYear() &&
+         date.getMonth() === yesterday.getMonth() &&
+         date.getDate() === yesterday.getDate()
+}
+
+/**
+ * 判断是否为本周
+ */
+function isThisWeek(date, now) {
+  var startOfWeek = getDate(now.getTime())
+  startOfWeek.setDate(now.getDate() - now.getDay())
+  startOfWeek.setHours(0, 0, 0, 0)
+  
+  return date.getTime() >= startOfWeek.getTime()
+}
+
+/**
+ * 判断是否为今年
+ */
+function isThisYear(date, now) {
+  return date.getFullYear() === now.getFullYear()
+}
+
+/**
+ * 获取星期名称
+ */
+function getWeekdayName(date) {
+  var weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+  return weekdays[date.getDay()]
+}
+
+/**
+ * 格式化时间部分（时:分）
+ */
+function formatTimeOnly(date) {
+  var hours = date.getHours()
+  var minutes = date.getMinutes()
+  
+  return padZero(hours) + ':' + padZero(minutes)
+}
+
+/**
+ * 数字补零
+ */
+function padZero(num) {
+  return num < 10 ? '0' + num : num.toString()
+}
+
+/**
+ * 格式化Token数量显示
+ * @param {number} tokens Token数量
+ * @returns {string} 格式化的Token显示
+ */
+function formatTokens(tokens) {
+  if (!tokens || tokens === 0) return ''
+  
+  if (tokens < 1000) {
+    return tokens + ' tokens'
+  } else if (tokens < 1000000) {
+    return (tokens / 1000).toFixed(1) + 'K tokens'
+  } else {
+    return (tokens / 1000000).toFixed(1) + 'M tokens'
+  }
+}
+
+/**
+ * 格式化费用显示
+ * @param {number} cost 费用（人民币）
+ * @returns {string} 格式化的费用显示
+ */
+function formatCost(cost) {
+  if (!cost || cost === 0) return ''
+
+  var numCost = parseFloat(cost)
+  if (numCost < 0.001) {
+    return '¥' + numCost.toFixed(6)
+  } else if (numCost < 0.01) {
+    return '¥' + numCost.toFixed(4)
+  } else if (numCost < 1) {
+    return '¥' + numCost.toFixed(4)
+  } else {
+    return '¥' + numCost.toFixed(2)
+  }
+}
+
+/**
+ * 简化的时间显示（用于消息列表）
+ * @param {string} timestamp ISO时间戳字符串
+ * @returns {string} 简化的时间显示
+ */
+function formatSimpleTime(timestamp) {
+  if (!timestamp) return ''
+  
+  try {
+    var date = getDate(timestamp)
+    var now = getDate()
+    var diff = now.getTime() - date.getTime()
+    
+    // 5分钟内
+    if (diff < 300000) {
+      return '刚刚'
+    }
+    
+    // 今天内
+    if (isToday(date, now)) {
+      return '今天 ' + formatTimeOnly(date)
+    }
+    
+    // 昨天
+    if (isYesterday(date, now)) {
+      return '昨天 ' + formatTimeOnly(date)
+    }
+    
+    // 本周内
+    if (isThisWeek(date, now)) {
+      return getWeekdayName(date)
+    }
+    
+    // 本年内
+    if (isThisYear(date, now)) {
+      return (date.getMonth() + 1) + '月' + date.getDate() + '日'
+    }
+    
+    // 跨年
+    return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
+    
+  } catch (e) {
+    console.log('简化时间格式化错误:', e)
+    return timestamp
+  }
+}
+
+// 导出函数供WXML使用
+module.exports = {
+  formatChatTime: formatChatTime,
+  formatRelativeTime: formatRelativeTime,
+  formatTokens: formatTokens,
+  formatCost: formatCost,
+  formatSimpleTime: formatSimpleTime
+}

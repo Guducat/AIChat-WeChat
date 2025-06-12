@@ -1,0 +1,138 @@
+<!--pages/stats/stats.wxml-->
+<view class="stats-container">
+  <!-- 头部标题 -->
+  <view class="stats-header">
+    <view class="header-title">使用统计</view>
+    <view class="header-subtitle">Token消耗与费用统计</view>
+  </view>
+
+  <!-- 总体统计卡片 -->
+  <view class="stats-card">
+    <view class="card-title">总体统计</view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-value">{{tokenStats.totalTokens || 0}}</view>
+        <view class="stat-label">总Token数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">¥{{tokenStats.totalCostDisplay}}</view>
+        <view class="stat-label">总费用</view>
+      </view>
+    </view>
+    <view class="last-updated">
+      最后更新：{{tokenStats.lastUpdated}}
+    </view>
+  </view>
+
+  <!-- 每日统计 -->
+  <view class="stats-card" wx:if="{{dailyStats.length > 0}}">
+    <view class="card-title">最近7天</view>
+    <view class="daily-stats">
+      <view 
+        wx:for="{{dailyStats}}" 
+        wx:key="date" 
+        class="daily-item"
+      >
+        <view class="daily-date">{{item.date}}</view>
+        <view class="daily-info">
+          <view class="daily-tokens">{{item.tokens}}</view>
+          <view class="daily-cost">{{item.cost}}</view>
+          <view class="daily-count">{{item.count}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 每月统计 -->
+  <view class="stats-card" wx:if="{{monthlyStats.length > 0}}">
+    <view class="card-title">最近6个月</view>
+    <view class="monthly-stats">
+      <view 
+        wx:for="{{monthlyStats}}" 
+        wx:key="month" 
+        class="monthly-item"
+      >
+        <view class="monthly-month">{{item.month}}</view>
+        <view class="monthly-info">
+          <view class="monthly-tokens">{{item.tokens}}</view>
+          <view class="monthly-cost">{{item.cost}}</view>
+          <view class="monthly-count">{{item.count}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 文件记录 -->
+  <view class="stats-card" wx:if="{{fileRecords.length > 0}}">
+    <view class="card-title">最近上传的文件</view>
+    <view class="file-records">
+      <view 
+        wx:for="{{fileRecords}}" 
+        wx:key="fileId" 
+        class="file-item"
+        bind:tap="onPreviewFile"
+        data-url="{{item.fileUrl}}"
+        data-type="{{item.fileType}}"
+      >
+        <view class="file-info">
+          <view class="file-name">{{item.fileName}}</view>
+          <view class="file-meta">
+            <text class="file-size">{{item.formattedFileSize}}</text>
+            <text class="file-time">{{item.formattedUploadTime}}</text>
+          </view>
+        </view>
+        <view class="file-type">{{item.fileType}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <van-button 
+      type="default" 
+      size="small"
+      bind:click="onShareStats"
+      custom-class="action-btn"
+    >
+      分享统计
+    </van-button>
+    <van-button 
+      type="warning" 
+      size="small"
+      bind:click="onShowClearDialog"
+      data-type="tokens"
+      custom-class="action-btn"
+    >
+      清空Token统计
+    </van-button>
+    <van-button 
+      type="danger" 
+      size="small"
+      bind:click="onShowClearDialog"
+      data-type="files"
+      custom-class="action-btn"
+    >
+      清空文件记录
+    </van-button>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!tokenStats.totalTokens && fileRecords.length === 0}}">
+    <view class="empty-icon">📊</view>
+    <view class="empty-text">暂无使用统计</view>
+    <view class="empty-desc">开始对话后将显示Token消耗和费用统计</view>
+  </view>
+</view>
+
+<!-- 清空确认对话框 -->
+<van-dialog
+  show="{{showClearDialog}}"
+  title="确认清空"
+  message="{{clearType === 'tokens' ? '确定要清空所有Token统计数据吗？' : '确定要清空所有文件记录吗？'}}"
+  show-cancel-button
+  bind:confirm="onConfirmClear"
+  bind:cancel="onCancelClear"
+/>
+
+<!-- Toast组件 -->
+<van-toast id="van-toast" />

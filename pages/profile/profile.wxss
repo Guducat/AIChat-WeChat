@@ -1,0 +1,374 @@
+/* pages/profile/profile.wxss */
+.profile-container {
+  padding: 0 16px 100px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* 用户信息区域 */
+.user-section {
+  background: var(--primary-gradient);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 16px 0 24px;
+  color: white;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  margin-right: 16px;
+  border: 3px solid rgba(255,255,255,0.3);
+}
+
+.user-details {
+  flex: 1;
+}
+
+.nickname {
+  display: block;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.login-status {
+  display: block;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.login-action {
+  margin-left: 12px;
+}
+
+.login-btn {
+  background: rgba(255,255,255,0.2) !important;
+  border-color: rgba(255,255,255,0.3) !important;
+  color: white !important;
+  min-width: 60px !important;
+}
+
+.logout-btn {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  color: rgba(255,255,255,0.8) !important;
+  min-width: 60px !important;
+}
+
+.statistics {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 30px;
+  background: rgba(255,255,255,0.2);
+  margin: 0 16px;
+}
+
+/* 设置区域 */
+.api-section,
+.settings-section,
+.function-section,
+.data-section {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12px;
+  padding-left: 4px;
+}
+
+/* 危险操作文本 */
+.danger-text {
+  color: #ff4444 !important;
+}
+
+/* 版本信息 */
+.version-info {
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.version-text {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.copyright {
+  display: block;
+  font-size: 12px;
+  color: #999;
+}
+
+/* 主题选择弹窗 */
+.theme-selector {
+  padding: 0 0 20px;
+}
+
+.selector-header {
+  padding: 20px 16px 16px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.selector-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.theme-list {
+  padding: 16px;
+}
+
+.theme-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  margin-bottom: 8px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.theme-item.selected {
+  background: var(--primary-color-light);
+  border-color: var(--primary-color);
+}
+
+.theme-item:active {
+  transform: scale(0.98);
+}
+
+.theme-label {
+  font-size: 16px;
+  color: #333;
+}
+
+/* API Key配置对话框 */
+.api-key-dialog {
+  padding: 0;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.dialog-header {
+  padding: 24px 24px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #1296DB 0%, #0d7bc7 100%);
+  color: white;
+}
+
+.dialog-title {
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.dialog-subtitle {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+}
+
+.dialog-content {
+  padding: 24px;
+  background: white;
+}
+
+.input-section {
+  margin-bottom: 24px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.api-key-input {
+  flex: 1;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px 80px 16px 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.api-key-input:focus {
+  border-color: #1296DB;
+  background: white;
+  box-shadow: 0 0 0 2px rgba(18, 150, 219, 0.1);
+  outline: none;
+}
+
+.input-actions {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.toggle-btn {
+  min-width: 64px !important;
+  height: 36px !important;
+  border-radius: 18px !important;
+  background: white !important;
+  border: 1px solid #e0e0e0 !important;
+  color: #1296DB !important;
+  font-size: 12px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.toggle-btn:active {
+  background: #f0f8ff !important;
+  transform: scale(0.95) !important;
+}
+
+.tips {
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f8ff 100%);
+  border: 1px solid #e8f4fd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 8px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+.tip-text {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  margin-left: 10px;
+  flex: 1;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px 24px;
+  background: #fafafa;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cancel-btn,
+.save-btn,
+.clear-btn {
+  flex: 1 !important;
+  height: 48px !important;
+  border-radius: 24px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.cancel-btn {
+  background: white !important;
+  border: 1px solid #e0e0e0 !important;
+  color: #666 !important;
+}
+
+.cancel-btn:active {
+  background: #f8f9fa !important;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #1296DB 0%, #0d7bc7 100%) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(18, 150, 219, 0.3) !important;
+}
+
+.save-btn:active {
+  transform: translateY(1px) !important;
+  box-shadow: 0 2px 8px rgba(18, 150, 219, 0.3) !important;
+}
+
+.clear-btn {
+  background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3) !important;
+}
+
+.clear-btn:active {
+  transform: translateY(1px) !important;
+  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3) !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .dialog-content {
+    padding: 20px;
+  }
+
+  .dialog-actions {
+    padding: 16px 20px 20px;
+  }
+
+  .cancel-btn,
+  .save-btn,
+  .clear-btn {
+    height: 44px !important;
+    font-size: 15px !important;
+  }
+}

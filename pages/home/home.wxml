@@ -1,0 +1,162 @@
+<!--pages/home/home.wxml-->
+<view class="home-container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="welcome-text">
+      <text class="main-title">今天我可以帮你什么？</text>
+      <text class="subtitle">输入您的问题，开始智能对话</text>
+    </view>
+  </view>
+
+  <!-- AI模型选择区域 -->
+  <view class="model-section">
+    <van-cell-group>
+      <van-cell
+        title="当前AI模型"
+        value="{{currentModelName}}"
+        is-link
+        bind:click="onSelectModel"
+        icon="setting-o"
+        disabled="{{loadingModels}}"
+      >
+        <view slot="right-icon" class="model-info" wx:if="{{!loadingModels}}">
+          <van-tag size="mini" custom-class="primary-tag">
+            {{currentModelIcon}}
+          </van-tag>
+        </view>
+      </van-cell>
+    </van-cell-group>
+  </view>
+
+  <!-- 主要输入区域 -->
+  <view class="input-section">
+    <!-- 文件上传预览 -->
+    <view class="upload-preview" wx:if="{{uploadedFiles.length > 0}}">
+      <view class="preview-title">已上传的文件：</view>
+      <view class="file-list">
+        <view
+          wx:for="{{uploadedFiles}}"
+          wx:key="fileId"
+          class="file-item"
+        >
+          <image
+            class="file-image"
+            src="{{item.fileUrl}}"
+            mode="aspectFill"
+          />
+          <view
+            class="delete-btn"
+            bind:tap="onDeleteFile"
+            data-index="{{index}}"
+          >
+            <van-icon name="cross" size="12px" color="#fff" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 输入框 -->
+    <view class="input-container">
+      <van-field
+        model:value="{{inputText}}"
+        placeholder="请输入您的问题..."
+        type="textarea"
+        autosize="{{true}}"
+        maxlength="1000"
+        show-word-limit
+        border="{{false}}"
+        custom-class="main-input"
+      />
+
+      <!-- 操作按钮区域 -->
+      <!-- 非多模态模型提示 -->
+      <view class="upload-tip" wx:if="{{showUploadTip}}">
+        <van-notice-bar
+          text="当前模型不支持图片输入，请选择多模态模型（如Qwen2.5-VL-72B-Instruct）"
+          mode="closeable"
+          background="#fff7e6"
+          color="#fa8c16"
+          left-icon="warning-o"
+        />
+      </view>
+
+      <view class="action-buttons">
+        <van-button
+          icon="photograph"
+          type="{{isMultimodalModel ? 'default' : 'info'}}"
+          size="small"
+          bind:click="onChooseFile"
+          disabled="{{isLoading || uploadedFiles.length >= 9 || !isMultimodalModel}}"
+          custom-class="upload-btn {{isMultimodalModel ? '' : 'disabled-btn'}}"
+        >
+          {{uploadButtonText}}
+        </van-button>
+
+        <van-button
+          type="primary"
+          size="small"
+          bind:click="onSendMessage"
+          custom-class="send-btn primary-button"
+          loading="{{isLoading}}"
+        >
+          {{sendButtonText}}
+        </van-button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷提示 -->
+  <view class="quick-tips">
+    <view class="tips-title">💡 您可以：</view>
+    <view class="tip-list">
+      <view class="tip-item">📝 输入文字问题进行对话</view>
+      <view class="tip-item">🖼️ 上传图片让AI分析内容</view>
+      <view class="tip-item">🔄 切换不同的AI模型体验</view>
+    </view>
+  </view>
+</view>
+
+<!-- 模型选择弹窗 -->
+<van-popup
+  show="{{showModelSelector}}"
+  position="bottom"
+  bind:close="onCancelModel"
+  closeable
+  round
+>
+  <view class="model-selector">
+    <view class="selector-header">
+      <text class="selector-title">选择AI模型</text>
+    </view>
+    <view class="model-list">
+      <view
+        wx:for="{{aiModels}}"
+        wx:key="id"
+        class="model-item {{selectedModel === item.id ? 'selected' : ''}}"
+        bind:tap="onConfirmModel"
+        data-value="{{index}}"
+      >
+        <view class="model-info-left">
+          <view class="model-icon">{{item.icon}}</view>
+          <view class="model-details">
+            <view class="model-name">{{item.name}}</view>
+            <view class="model-desc">{{item.description}}</view>
+            <view class="model-price">输出: ¥{{item.pricePerOutputToken || item.pricePerToken}}/token</view>
+            <view class="model-feature" wx:if="{{item.supportMultimodal}}">
+              <van-tag size="mini" type="success">支持图文</van-tag>
+            </view>
+          </view>
+        </view>
+        <van-icon
+          wx:if="{{selectedModel === item.id}}"
+          name="success"
+          color="#1296DB"
+          size="20px"
+        />
+      </view>
+    </view>
+  </view>
+</van-popup>
+
+<!-- Toast组件 -->
+<van-toast id="van-toast" />

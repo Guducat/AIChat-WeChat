@@ -1,0 +1,187 @@
+/* pages/login/login.wxss */
+input{
+  color: white;
+  text-align: center;
+}
+
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1296DB 0%, #0D7AC4 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 头部 */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 20px 16px;
+  position: relative;
+}
+
+.back-icon {
+  color: white !important;
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+/* 登录内容 */
+.login-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 32px;
+}
+
+/* Logo区域 */
+.logo-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo {
+  font-size: 60px;
+  margin-bottom: 16px;
+}
+
+.app-name {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.app-desc {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 用户信息填写区域 */
+.user-info-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  backdrop-filter: blur(10px);
+}
+
+.section-label {
+  display: block;
+  font-size: 14px;
+  color: white;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+/* 头像选择 */
+.avatar-section {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  overflow: hidden;
+  margin: 0 auto;
+  padding: 0;
+  background: none;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.avatar-wrapper::after {
+  border: none;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.avatar-wrapper:active .avatar-mask {
+  opacity: 1;
+}
+
+/* 昵称填写 */
+.nickname-section {
+  text-align: left;
+}
+
+.nickname-input {
+  width: 100%;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 22px;
+  padding: 0 16px;
+  font-size: 16px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+}
+
+.nickname-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 登录方式 */
+.login-methods {
+  margin-bottom: 32px;
+}
+
+.login-btn {
+  width: 100% !important;
+  margin-bottom: 16px !important;
+  height: 48px !important;
+  border-radius: 24px !important;
+  font-size: 16px !important;
+}
+
+.wechat-btn {
+  background: #07C160 !important;
+  border-color: #07C160 !important;
+}
+
+.guest-btn {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+}
+
+/* 登录说明 */
+.login-tips {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+.link-text {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: underline;
+}
