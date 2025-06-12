@@ -396,6 +396,38 @@
   font-weight: 400 !important;
 }
 
+/* 重试功能样式 */
+.retry-section {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.retry-btn {
+  min-width: 80px !important;
+  height: 32px !important;
+  border-radius: 16px !important;
+  font-size: 13px !important;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.retry-btn:active {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow: 0 1px 4px rgba(255, 107, 107, 0.4) !important;
+}
+
+.retry-btn:disabled {
+  background: #ccc !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
 /* towxml在思考过程中的样式 */
 .reasoning-collapse-item towxml {
   font-size: 13px !important;

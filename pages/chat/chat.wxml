@@ -38,11 +38,11 @@
       </view>
       <view class="token-item">
         <text class="label">输入单价:</text>
-        <text class="value">{{timeFormatter.formatCost(currentModel.pricePerInputToken || currentModel.pricePerToken || '0.00014')}}/token</text>
+        <text class="value">{{timeFormatter.formatModelPrice(currentModel.pricePerInputToken || currentModel.pricePerToken || '2')}}</text>
       </view>
       <view class="token-item">
         <text class="label">输出单价:</text>
-        <text class="value">{{timeFormatter.formatCost(currentModel.pricePerOutputToken || currentModel.pricePerToken || '0.00028')}}/token</text>
+        <text class="value">{{timeFormatter.formatModelPrice(currentModel.pricePerOutputToken || currentModel.pricePerToken || '8')}}</text>
       </view>
     </view>
   </view>
@@ -139,6 +139,22 @@
           <view wx:if="{{item.content && item.content.length > 0}}" class="answer-section">
             <towxml wx:if="{{item.contentNodes}}" nodes="{{item.contentNodes}}" />
             <text wx:else class="message-text">{{item.content}}</text>
+
+            <!-- 错误重试按钮 -->
+            <view wx:if="{{item.showRetryButton}}" class="retry-section">
+              <van-button
+                type="primary"
+                size="mini"
+                icon="replay"
+                bind:click="onRetryMessage"
+                data-message-id="{{item.id}}"
+                loading="{{item.isRetrying}}"
+                disabled="{{item.isRetrying}}"
+                custom-class="retry-btn"
+              >
+                {{item.isRetrying ? '重试中...' : '重试'}}
+              </van-button>
+            </view>
           </view>
 
           <van-loading

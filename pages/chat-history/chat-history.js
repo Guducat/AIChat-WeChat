@@ -137,8 +137,8 @@ Page({
           // 计算费用（如果没有保存的话）
           if (calculatedCost === 0 && calculatedTokens > 0) {
             try {
-              // 使用默认价格：0.00028 RMB per token
-              calculatedCost = calculatedTokens * 0.00028
+              // 使用默认价格：¥8/百万tokens（DeepSeek-V3输出价格）
+              calculatedCost = (calculatedTokens / 1000000) * 8
             } catch (error) {
               console.warn('计算费用失败:', error)
               calculatedCost = 0

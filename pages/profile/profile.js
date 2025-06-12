@@ -619,7 +619,7 @@ Page({
 
           // 重置设置
           const defaultSettings = {
-            selectedModel: 'gpt-3.5-turbo',
+            selectedModel: 'Deepseek-R1',
             autoSave: true,
             showTokenCount: true,
             theme: 'light'

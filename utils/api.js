@@ -2,6 +2,7 @@
 import { API_BASE_URL, DEFAULT_AI_MODELS, SILICONFLOW_API_BASE, CURRENCY, USE_MOCK_DATA } from './constants.js'
 import { getSiliconFlowApiKey, hasSiliconFlowApiKey } from './storage.js'
 import { processMultimodalMessage, validateBase64Image } from './image-processor.js'
+import { calculateModelCost } from './aiInfo.js'
 
 /**
  * 发起HTTP请求
@@ -489,58 +490,62 @@ const simulateTypingEffect = (content, onMessage, onComplete, isReasoning = fals
 }
 
 /**
- * 计算精确的API调用费用
+ * 计算精确的API调用费用（修正价格获取逻辑）
  * @param {number} promptTokens 输入token数量
  * @param {number} completionTokens 输出token数量
  * @param {string} model 模型名称
- * @returns {string} 精确费用（保留6位小数）
+ * @returns {string} 精确费用（保留2位小数）
  */
 const calculateAccurateCost = (promptTokens, completionTokens, model) => {
-  const modelConfig = DEFAULT_AI_MODELS.find(m => m.id === model)
+  console.log('🧮 开始计算费用:', { promptTokens, completionTokens, model })
 
-  if (!modelConfig) {
-    console.warn('未找到模型配置，使用默认价格:', model)
-    // 使用默认价格
-    const inputCost = promptTokens * 0.00014  // 默认输入价格
-    const outputCost = completionTokens * 0.00028  // 默认输出价格
-    return (inputCost + outputCost).toFixed(6)
+  // 使用统一的费用计算函数
+  const costResult = calculateModelCost(model, promptTokens, completionTokens)
+
+  if (costResult.error) {
+    console.warn('⚠️ 费用计算失败:', costResult.error)
+    // 使用默认价格（DeepSeek-V3的价格：输入¥2/百万tokens，输出¥8/百万tokens）
+    const defaultInputCost = (promptTokens / 1000000) * 2
+    const defaultOutputCost = (completionTokens / 1000000) * 8
+    const defaultTotalCost = defaultInputCost + defaultOutputCost
+
+    console.log('💰 使用默认价格计算:', {
+      promptTokens,
+      completionTokens,
+      defaultInputCost: defaultInputCost.toFixed(6),
+      defaultOutputCost: defaultOutputCost.toFixed(6),
+      defaultTotalCost: defaultTotalCost.toFixed(6)
+    })
+
+    return defaultTotalCost.toFixed(6)
   }
 
-  // 获取模型的输入和输出价格
-  const inputPrice = modelConfig.pricePerInputToken || modelConfig.pricePerToken || 0.00014
-  const outputPrice = modelConfig.pricePerOutputToken || modelConfig.pricePerToken || 0.00028
-
-  // 计算精确费用
-  const inputCost = promptTokens * inputPrice
-  const outputCost = completionTokens * outputPrice
-  const totalCost = inputCost + outputCost
-
-  console.log('费用计算详情:', {
-    model: model,
+  console.log('💸 费用计算详情:', {
     promptTokens: promptTokens,
     completionTokens: completionTokens,
-    inputPrice: inputPrice,
-    outputPrice: outputPrice,
-    inputCost: inputCost.toFixed(6),
-    outputCost: outputCost.toFixed(6),
-    totalCost: totalCost.toFixed(6)
+    inputCost: costResult.inputCost.toFixed(6),
+    outputCost: costResult.outputCost.toFixed(6),
+    totalCost: costResult.totalCost.toFixed(6),
+    pricing: costResult.pricing
   })
 
-  return totalCost.toFixed(6)
+  // 返回精确到6位小数的费用（人民币分厘单位）
+  return costResult.totalCost.toFixed(6)
 }
 
 /**
- * 计算API调用费用（兼容旧版本）
+ * 计算API调用费用（兼容旧版本，使用新的百万tokens价格格式）
  * @param {number} tokens Token数量
  * @param {string} model 模型名称
  */
 const calculateCost = (tokens, model) => {
   const modelConfig = DEFAULT_AI_MODELS.find(m => m.id === model)
   if (modelConfig) {
-    // 假设大部分是输出token
-    return (tokens * (modelConfig.pricePerOutputToken || 0.00028)).toFixed(6)
+    // 假设大部分是输出token，使用新的百万tokens价格格式
+    const pricePerMillionTokens = modelConfig.pricePerOutputToken || 8
+    return ((tokens / 1000000) * pricePerMillionTokens).toFixed(6)
   }
-  return (tokens * 0.00028).toFixed(6) // 默认价格
+  return ((tokens / 1000000) * 8).toFixed(6) // 默认价格：¥8/百万tokens
 }
 
 /**

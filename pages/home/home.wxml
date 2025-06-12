@@ -141,7 +141,7 @@
           <view class="model-details">
             <view class="model-name">{{item.name}}</view>
             <view class="model-desc">{{item.description}}</view>
-            <view class="model-price">输出: ¥{{item.pricePerOutputToken || item.pricePerToken}}/token</view>
+            <view class="model-price">输出: ¥{{item.pricePerOutputToken || item.pricePerToken}}/百万tokens</view>
             <view class="model-feature" wx:if="{{item.supportMultimodal}}">
               <van-tag size="mini" type="success">支持图文</van-tag>
             </view>

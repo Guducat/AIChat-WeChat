@@ -8,7 +8,7 @@ import { convertWxFileToBase64, validateBase64Image, compressImage } from '../..
 Page({
   data: {
     aiModels: [],
-    selectedModel: 'gpt-3.5-turbo',
+    selectedModel: 'Deepseek-R1',
     userSettings: {},
     showModelSelector: false,
     inputText: '',
