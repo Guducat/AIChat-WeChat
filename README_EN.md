@@ -11,6 +11,22 @@
 
 English | [中文](./README.md)
 
+<div align="center">
+
+## Screenshots
+
+| Home Chat | Multimodal Chat | Chat History |
+|:---------:|:---------------:|:------------:|
+| ![Home Chat](./assets/LLM_Chat_01.jpg) | ![Multimodal Chat](./assets/VLM_Chat.jpg) | ![Chat History](./assets/ChatHistory.jpg) |
+| Text conversation interface | Image-text interaction | History management |
+
+| Chat Details | Personal Profile | Usage Details |
+|:------------:|:----------------:|:-------------:|
+| ![Chat Details](./assets/LLM_Chat_02.jpg) | ![Personal Profile](./assets/PersonalProfile.jpg) | ![Usage Details](./assets/UseDetail.jpg) |
+| Streaming response display | User settings page | Token statistics |
+
+</div>
+
 ## ✨ Features
 
 ### 🧠 AI Chat Functionality

@@ -1,15 +1,37 @@
 # AI对话助手微信小程序
+<div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/Guducat/AIChat-WeChat?style=flat-square)](https://github.com/Guducat/AIChat-WeChat/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Guducat/AIChat-WeChat?style=flat-square)](https://github.com/Guducat/AIChat-WeChat/network)
-[![GitHub issues](https://img.shields.io/github/issues/Guducat/AIChat-WeChat?style=flat-square)](https://github.com/Guducat/AIChat-WeChat/issues)
-[![GitHub license](https://img.shields.io/github/license/Guducat/AIChat-WeChat?style=flat-square)](https://github.com/Guducat/AIChat-WeChat/blob/master/LICENSE)
-[![WeChat MiniProgram](https://img.shields.io/badge/WeChat-MiniProgram-brightgreen?style=flat-square)](https://developers.weixin.qq.com/miniprogram/dev/framework/)
-[![Vant Weapp](https://img.shields.io/badge/UI-Vant%20Weapp-blue?style=flat-square)](https://vant-ui.github.io/vant-weapp/)
+[![WeChat](https://img.shields.io/badge/微信小程序-07C160?style=flat-square&logo=wechat&logoColor=white)](https://developers.weixin.qq.com/miniprogram/dev/framework/)
+[![Vant Weapp](https://img.shields.io/badge/UI_Vant_Weapp-1989fa?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAGkSURBVHgBpVK9SgNBEJ3ZvUuCglZiK4iFj2BjKTY+goWtv4WFj2BjKTY+goWtYCMIoiCoiJWKqAgWQfS4u93xzewlR+7iHQRcdmZ25s83H0CJ0eH+UrPRuAIQywpKCMjV2dnF5b1hq0B7Y20bIS4Y8y8gxrHt9s6rYStBq9mYQYw7bP4bCJ1GY2qesQ8QYyQbBp9q+Q0k5wRjHyCk4Z4xGZ4cHmzXfXyMiJz3wH8FdCbHx9d3jL0D0Ht5fZtFjDdI0nQcQJ7v/BSLq1JvNbcY+QIwjXa0l2Ww0lpnkHGDsA4SYn1nZbLfWmeQcYOwDhJhfIhKd7u1u1X1/nYg89cB/BXQmx8eXj4y9A9B7eXufQYy3SJI0B0Cc7P4XiKhbq09tMvYBQoxkQ+9TbX4A0Ht6fplBjHdIkjQHQJzs/heIqFevT28w9gFCjGRD71NtfgDQe3x6nkGM90iSNA9AnOz+F4ioPzU1uc7YBwgxkg29T7X5AUDv/v5xGjE+IEnSHABxsvtfIKLBxMTEGmMfIMRINvQ+1eYHAL3b27tpxPiIJEnzAMTJ7n+BiIbj42MrjH2AECPZ0PtUmx8A9K6urqcR4xOSJM0DECe7/wUi+gaDcGgXf4Td6wAAAABJRU5ErkJggg==)](https://vant-ui.github.io/vant-weapp/)
+[![License](https://img.shields.io/badge/License-MIT-4D4D4D?style=flat-square&logo=open-source-initiative)](https://github.com/Guducat/AIChat-WeChat/blob/main/LICENSE)
+[![Status](https://img.shields.io/badge/Status-Active-4CAF50?style=flat-square&logo=circle-check&logoColor=white)](#)
+[![PRs](https://img.shields.io/badge/PRs-Welcome-2196F3?style=flat-square&logo=git-pull-request&logoColor=white)](https://github.com/Guducat/AIChat-WeChat/pulls)
 
-> 🤖 基于SiliconFlow API的智能AI对话助手微信小程序，支持多模态交互、思考模型推理、本地数据管理等功能
+
+[![Stars](https://img.shields.io/github/stars/Guducat/AIChat-WeChat?style=flat-square&color=FFD700&logo=github&logoColor=black)](https://github.com/Guducat/AIChat-WeChat/stargazers)
+[![Forks](https://img.shields.io/github/forks/Guducat/AIChat-WeChat?style=flat-square&color=00B4AB&logo=github&logoColor=white)](https://github.com/Guducat/AIChat-WeChat/network)
+[![Issues](https://img.shields.io/github/issues/Guducat/AIChat-WeChat?style=flat-square&color=FF6B6B&logo=github&logoColor=white)](https://github.com/Guducat/AIChat-WeChat/issues)
+> 🤖 基于硅基流动(SiliconFlow)API的智能AI对话助手微信小程序，支持多模态交互、思考模型推理、本地数据管理等功能
 
 [English](./README_EN.md) | 中文
+
+</div>
+
+<div align="center">
+
+## 图片展示
+
+| 主页对话 | 多模态聊天 | 对话历史 |
+|:--------:|:----------:|:--------:|
+| ![主页对话](./assets/LLM_Chat_01.jpg) | ![多模态聊天](./assets/VLM_Chat.jpg) | ![对话历史](./assets/ChatHistory.jpg) |
+| 文本对话界面 | 图文交互功能 | 历史记录管理 |
+
+| 对话详情 | 个人中心 | 使用详情 |
+|:--------:|:--------:|:--------:|
+| ![对话详情](./assets/LLM_Chat_02.jpg) | ![个人中心](./assets/PersonalProfile.jpg) | ![使用详情](./assets/UseDetail.jpg) |
+| 流式响应展示 | 用户设置页面 | Token统计信息 |
+
+</div>
 
 ## ✨ 功能特性
 
