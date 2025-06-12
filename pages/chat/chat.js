@@ -34,7 +34,10 @@ Page({
     isUploading: false,
     uploadButtonText: '上传图片',
     uploadDisabled: false,
-    uploadDisabledReason: ''
+    uploadDisabledReason: '',
+    // ScrollViewContext相关状态
+    scrollViewContextAvailable: false,
+    scrollTop: 0
   },
 
   onLoad(options) {
@@ -75,6 +78,47 @@ Page({
   onShow() {
     // 页面显示时确保数据状态正确
     this.updateDisplayStatus()
+
+    // 检查ScrollViewContext支持情况
+    setTimeout(() => {
+      this.initScrollViewContext()
+    }, 300)
+  },
+
+  /**
+   * 初始化ScrollViewContext检查
+   */
+  initScrollViewContext() {
+    console.log('🔧 初始化ScrollViewContext检查...')
+
+    const isSupported = this.checkScrollViewContextSupport()
+
+    // 测试ScrollViewContext是否可用
+    if (isSupported) {
+      wx.createSelectorQuery()
+        .select('#chat-scroll-view')
+        .context((res) => {
+          const hasContext = !!(res && res.context)
+          console.log('🎯 ScrollViewContext初始化检查结果:', {
+            isSupported: isSupported,
+            hasContext: hasContext,
+            contextType: res && res.context ? typeof res.context : 'undefined'
+          })
+
+          this.setData({
+            scrollViewContextAvailable: hasContext
+          })
+
+          if (!hasContext) {
+            console.warn('⚠️ ScrollViewContext不可用，将使用备用滚动方案')
+          }
+        })
+        .exec()
+    } else {
+      this.setData({
+        scrollViewContextAvailable: false
+      })
+    }
   },
 
   onUnload() {
@@ -244,18 +288,11 @@ Page({
       messages: [...this.data.messages, userMessage],
       chatStatus: CHAT_STATUS.SENDING
     }, () => {
-      // 在setData回调中执行滚动,确保消息已添加到页面
-      wx.createSelectorQuery()
-        .select('#chat-container')
-        .boundingClientRect((rect) => {
-          if (rect) {
-            wx.pageScrollTo({
-              scrollTop: rect.height,
-              duration: 300
-            })
-          }
-        })
-        .exec()
+      // 在setData回调中执行滚动，确保消息已添加到页面
+      this.updateDisplayStatus()
+      setTimeout(() => {
+        this.scrollToStatusIndicator()
+      }, 100)
     })
 
     // 发送到AI
@@ -308,9 +345,14 @@ Page({
       uploadedFileUrls: [],
       uploadButtonText: '上传图片',
       chatStatus: CHAT_STATUS.SENDING
+    }, () => {
+      // 在setData回调中执行滚动，确保消息已添加到页面并且状态已更新
+      this.updateDisplayStatus()
+      // 延迟一小段时间确保DOM更新完成，然后滚动到状态提示区域
+      setTimeout(() => {
+        this.scrollToStatusIndicator()
+      }, 100)
     })
-
-    this.updateDisplayStatus()
 
     // 发送到AI
     this.sendToAI(trimmedText || (safeUploadedFiles.length > 0 ? '请分析这些图片' : ''), safeUploadedFiles)
@@ -435,23 +477,40 @@ Page({
 
     // 创建AI回复消息
     const aiMessageId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+
+    // 检查是否为DeepSeek-R1模型
+    const isDeepSeekR1 = this.isDeepSeekR1Model(currentModel.id)
+
+    console.log('🧠 创建AI消息:', {
+      modelId: currentModel.id,
+      modelName: currentModel.name,
+      isDeepSeekR1: isDeepSeekR1,
+      reasoningExpandedDefault: isDeepSeekR1,
+      specialBehavior: isDeepSeekR1 ? 'DeepSeek-R1思考过程默认展开' : '普通模型思考过程默认折叠'
+    })
+
     const aiMessage = {
       id: aiMessageId,
       type: MESSAGE_TYPES.ASSISTANT,
       content: '',
       contentNodes: null, // 用于towxml渲染AI最终回答
       reasoningContent: '', // 思考过程内容（纯文本）
-      reasoningExpanded: false, // 思考过程折叠状态，默认折叠
+      reasoningExpanded: isDeepSeekR1, // DeepSeek-R1模型默认展开思考过程，其他模型默认折叠
       timestamp: new Date().toISOString(),
       tokens: 0,
       isStreaming: true,
       // 确保DeepSeek-R1等思考模型的状态正确初始化
-      isThinkingModel: currentModel.id.includes('DeepSeek-R1') || currentModel.id.includes('R1')
+      isThinkingModel: isDeepSeekR1
     }
 
     this.setData({
       messages: [...this.data.messages, aiMessage],
       chatStatus: CHAT_STATUS.RECEIVING
+    }, () => {
+      // AI开始回复时，滚动到状态提示区域显示"AI思考中..."
+      setTimeout(() => {
+        this.scrollToStatusIndicator()
+      }, 100)
     })
 
     // 发送请求
@@ -532,8 +591,9 @@ Page({
         return null
       }
 
-      console.log(`${contentType}: 开始towxml转换，内容长度:`, content.length)
-      console.log(`${contentType}: 内容预览:`, content.substring(0, 100) + '...')
+      // 调试信息
+      // console.log(`${contentType}: 开始towxml转换，内容长度:`, content.length)
+      // console.log(`${contentType}: 内容预览:`, content.substring(0, 100) + '...')
 
       // 使用towxml解析markdown内容
       const result = app.towxml(content, 'markdown', {
@@ -545,7 +605,8 @@ Page({
         }
       })
 
-      console.log(`${contentType}: towxml转换成功，节点类型:`, typeof result)
+      // 调试信息
+      // console.log(`${contentType}: towxml转换成功，节点类型:`, typeof result)
       return result
     } catch (error) {
       console.error(`${contentType}: towxml解析失败:`, error)
@@ -583,15 +644,25 @@ Page({
         if (isReasoning) {
           // 推理内容单独存储（不使用towxml，保持轻量）
           const updatedReasoningContent = (msg.reasoningContent || '') + newContent
+
+          // 检查是否为DeepSeek-R1模型
+          const isDeepSeekR1 = this.isDeepSeekR1Model()
+
           const updatedMsg = {
             ...msg,
             ...baseUpdate,
             reasoningContent: updatedReasoningContent
           }
 
-          // 确保思考过程的折叠状态正确初始化
+          // 设置思考过程的展开状态
           if (!updatedMsg.hasOwnProperty('reasoningExpanded')) {
-            updatedMsg.reasoningExpanded = false
+            // DeepSeek-R1模型默认展开，其他模型默认折叠
+            updatedMsg.reasoningExpanded = isDeepSeekR1
+            console.log(`🧠 初始化思考过程展开状态: ${isDeepSeekR1 ? '展开' : '折叠'} (${this.data.currentModel?.name})`)
+          } else if (isDeepSeekR1 && !updatedMsg.reasoningExpanded && updatedReasoningContent.length > 0) {
+            // 如果是DeepSeek-R1模型且当前是折叠状态，在开始接收思考内容时自动展开
+            updatedMsg.reasoningExpanded = true
+            console.log('🧠 DeepSeek-R1思考过程自动展开 - 检测到思考内容开始输出')
           }
 
           // 确保在思考过程更新时不影响最终回答的显示
@@ -601,6 +672,16 @@ Page({
           if (!updatedMsg.hasOwnProperty('contentNodes')) {
             updatedMsg.contentNodes = null
           }
+
+          console.log('💭 更新思考过程:', {
+            messageId: messageId,
+            modelName: this.data.currentModel?.name,
+            isDeepSeekR1: isDeepSeekR1,
+            reasoningExpanded: updatedMsg.reasoningExpanded,
+            reasoningLength: updatedReasoningContent.length,
+            newContentLength: newContent.length,
+            isFirstReasoningContent: (msg.reasoningContent || '').length === 0 && newContent.length > 0
+          })
 
           return updatedMsg
         } else {
@@ -633,10 +714,59 @@ Page({
 
     this.setData({
       messages
+    }, () => {
+      // 只在消息完成或内容较长时滚动，避免频繁滚动影响用户体验
+      if (isComplete || (newContent && newContent.length > 50)) {
+        // 延迟滚动确保DOM更新完成
+        setTimeout(() => {
+          if (isComplete) {
+            // 消息完成时滚动到消息底部
+            this.scrollToBottom()
+          } else {
+            // 流式更新时滚动到状态提示区域
+            this.scrollToStatusIndicator()
+          }
+        }, 50)
+      }
+    })
+  },
+
+  /**
+   * 检查是否为DeepSeek-R1模型
+   */
+  isDeepSeekR1Model(modelId = null) {
+    const currentModelId = modelId || (this.data.currentModel && this.data.currentModel.id)
+    if (!currentModelId) return false
+
+    return currentModelId.includes('DeepSeek-R1') || currentModelId.includes('R1')
+  },
+
+  /**
+   * 测试DeepSeek-R1思考过程展开功能（开发调试用）
+   */
+  testDeepSeekR1ReasoningExpansion() {
+    console.log('🧪 测试DeepSeek-R1思考过程展开功能')
+
+    const testResults = {
+      currentModel: this.data.currentModel?.id,
+      isDeepSeekR1: this.isDeepSeekR1Model(),
+      messagesWithReasoning: this.data.messages.filter(msg => msg.reasoningContent && msg.reasoningContent.length > 0),
+      expectedBehavior: this.isDeepSeekR1Model() ? '思考过程应该默认展开' : '思考过程应该默认折叠'
+    }
+
+    console.log('🧪 测试结果:', testResults)
+
+    // 检查每个有思考内容的消息的展开状态
+    testResults.messagesWithReasoning.forEach(msg => {
+      console.log(`🧪 消息 ${msg.id}:`, {
+        reasoningExpanded: msg.reasoningExpanded,
+        isThinkingModel: msg.isThinkingModel,
+        reasoningLength: msg.reasoningContent.length,
+        isCorrectState: this.isDeepSeekR1Model() ? msg.reasoningExpanded : true // 允许用户手动控制
+      })
     })
 
-    // 滚动到底部
-    this.scrollToBottom()
+    return testResults
   },
 
   /**
@@ -647,10 +777,12 @@ Page({
     const expandedItems = event.detail || []
     const isExpanded = expandedItems.includes('reasoning')
 
-    console.log('思考过程折叠状态切换:', {
+    console.log('💭 思考过程折叠状态切换:', {
       messageId,
       expandedItems,
-      isExpanded
+      isExpanded,
+      isDeepSeekR1: this.isDeepSeekR1Model(),
+      modelId: this.data.currentModel?.id
     })
 
     const messages = this.data.messages.map(msg => {
@@ -669,17 +801,295 @@ Page({
   },
 
   /**
-   * 滚动到底部
+   * 滚动到底部（使用ScrollViewContext.scrollIntoView）
    */
   scrollToBottom() {
-    wx.createSelectorQuery().select('#chat-container').boundingClientRect((rect) => {
-      if (rect) {
-        wx.pageScrollTo({
-          scrollTop: rect.height,
-          duration: 300
-        })
+    // 如果有状态提示显示，滚动到状态提示区域；否则滚动到最后一条消息
+    if (this.data.chatStatus !== 'idle') {
+      this.scrollToStatusIndicator()
+    } else {
+      this.scrollToLastMessage()
+    }
+  },
+
+  /**
+   * 滚动到最后一条消息
+   */
+  scrollToLastMessage() {
+    const { messages } = this.data
+    if (messages && messages.length > 0) {
+      const lastMessageId = messages[messages.length - 1].id
+      this.scrollToMessage(lastMessageId)
+    }
+  },
+
+  /**
+   * 滚动到指定消息
+   */
+  scrollToMessage(messageId) {
+    if (!messageId) return
+
+    wx.createSelectorQuery()
+      .select('#chat-scroll-view')
+      .context((res) => {
+        if (res && res.context) {
+          const scrollViewContext = res.context
+
+          try {
+            scrollViewContext.scrollIntoView(`#msg-${messageId}`, {
+              offset: 10,
+              withinExtent: false,
+              alignment: 'end',
+              animated: true
+            })
+            console.log(`滚动到消息 ${messageId} 成功`)
+          } catch (error) {
+            console.warn('滚动到消息失败，使用备用方案:', error)
+            this.fallbackScrollToBottom()
+          }
+        } else {
+          this.fallbackScrollToBottom()
+        }
+      })
+      .exec()
+  },
+
+  /**
+   * 检查基础库版本和ScrollViewContext支持
+   */
+  checkScrollViewContextSupport() {
+    const systemInfo = wx.getSystemInfoSync()
+    const SDKVersion = systemInfo.SDKVersion || '0.0.0'
+
+    console.log('📱 系统信息检查:', {
+      SDKVersion: SDKVersion,
+      platform: systemInfo.platform,
+      version: systemInfo.version,
+      system: systemInfo.system
+    })
+
+    // 检查基础库版本是否支持ScrollViewContext.scrollIntoView (需要2.14.4+)
+    const compareVersion = (v1, v2) => {
+      const v1parts = v1.split('.').map(Number)
+      const v2parts = v2.split('.').map(Number)
+
+      for (let i = 0; i < Math.max(v1parts.length, v2parts.length); i++) {
+        const v1part = v1parts[i] || 0
+        const v2part = v2parts[i] || 0
+
+        if (v1part > v2part) return 1
+        if (v1part < v2part) return -1
       }
-    }).exec()
+      return 0
+    }
+
+    const isSupported = compareVersion(SDKVersion, '2.14.4') >= 0
+    console.log('🔍 ScrollViewContext支持检查:', {
+      currentVersion: SDKVersion,
+      requiredVersion: '2.14.4',
+      isSupported: isSupported
+    })
+
+    return isSupported
+  },
+
+  /**
+   * 滚动到状态提示区域（使用官方ScrollViewContext API）
+   */
+  scrollToStatusIndicator() {
+    console.log('🔍 开始滚动到状态提示区域...')
+
+    // 检查ScrollViewContext是否可用
+    if (this.data.scrollViewContextAvailable) {
+      console.log('✅ 使用ScrollViewContext.scrollIntoView方案')
+      this.performScrollViewContextQuery()
+    } else {
+      console.log('🔄 ScrollViewContext不可用，使用备用滚动方案')
+      this.fallbackScrollToBottom()
+    }
+  },
+
+  /**
+   * 执行ScrollViewContext查询
+   */
+  performScrollViewContextQuery() {
+    // 首先检查scroll-view元素是否存在
+    wx.createSelectorQuery()
+      .select('#chat-scroll-view')
+      .boundingClientRect((rect) => {
+        console.log('📏 scroll-view元素查询结果:', {
+          found: !!rect,
+          rect: rect,
+          id: '#chat-scroll-view'
+        })
+
+        if (!rect) {
+          console.error('❌ scroll-view元素未找到，检查WXML中的id是否正确')
+          this.fallbackScrollToBottom()
+          return
+        }
+
+        // 检查状态提示元素是否存在
+        wx.createSelectorQuery()
+          .select('#chat-status-indicator')
+          .boundingClientRect((statusRect) => {
+            console.log('📍 状态提示元素查询结果:', {
+              found: !!statusRect,
+              rect: statusRect,
+              id: '#chat-status-indicator',
+              chatStatus: this.data.chatStatus
+            })
+
+            // 如果状态提示元素不存在，直接使用备用方案
+            if (!statusRect) {
+              console.warn('⚠️ 状态提示元素不存在，使用备用滚动方案')
+              this.fallbackScrollToBottom()
+              return
+            }
+
+            // 获取scroll-view的context
+            wx.createSelectorQuery()
+              .select('#chat-scroll-view')
+              .context((res) => {
+                console.log('🎯 ScrollViewContext查询结果:', {
+                  hasResult: !!res,
+                  hasContext: !!(res && res.context),
+                  contextType: res && res.context ? typeof res.context : 'undefined',
+                  contextMethods: res && res.context ? Object.getOwnPropertyNames(res.context) : [],
+                  fullResult: res
+                })
+
+                if (res && res.context) {
+                  const scrollViewContext = res.context
+
+                  // 检查scrollIntoView方法是否存在
+                  const hasScrollIntoView = typeof scrollViewContext.scrollIntoView === 'function'
+                  console.log('🔧 ScrollViewContext方法检查:', {
+                    hasScrollIntoView: hasScrollIntoView,
+                    availableMethods: Object.getOwnPropertyNames(scrollViewContext),
+                    contextPrototype: Object.getPrototypeOf(scrollViewContext)
+                  })
+
+                  if (!hasScrollIntoView) {
+                    console.warn('⚠️ scrollIntoView方法不存在，可能是基础库版本过低')
+                    this.fallbackScrollToBottom()
+                    return
+                  }
+
+                  // 使用scrollIntoView滚动到状态提示区域
+                  try {
+                    console.log('🚀 开始调用scrollIntoView...')
+                    scrollViewContext.scrollIntoView('#chat-status-indicator', {
+                      offset: 20,        // 额外偏移20px，确保状态提示完全可见
+                      withinExtent: false, // 不限制在cacheExtent内
+                      alignment: 'end',   // 将目标元素对齐到视口底部
+                      animated: true      // 启用平滑滚动动画
+                    })
+                    console.log('✅ ScrollViewContext.scrollIntoView 调用成功')
+                  } catch (error) {
+                    console.error('❌ ScrollViewContext.scrollIntoView 调用失败:', {
+                      error: error,
+                      message: error.message,
+                      stack: error.stack
+                    })
+                    this.fallbackScrollToBottom()
+                  }
+                } else {
+                  console.error('❌ 无法获取ScrollViewContext，详细信息:', {
+                    selectorQueryResult: res,
+                    possibleReasons: [
+                      '1. scroll-view元素不存在或id错误',
+                      '2. 基础库版本过低（需要2.14.4+）',
+                      '3. 页面渲染未完成',
+                      '4. scroll-view组件配置问题（缺少enhanced属性）',
+                      '5. 微信开发者工具版本问题'
+                    ]
+                  })
+                  this.fallbackScrollToBottom()
+                }
+              })
+              .exec()
+          })
+          .exec()
+      })
+      .exec()
+  },
+
+  /**
+   * 备用滚动方案（兼容性处理）
+   */
+  fallbackScrollToBottom() {
+    console.log('🔄 使用备用滚动方案...')
+
+    // 方案1：尝试使用scroll-view的scroll-top属性
+    this.tryScrollTopMethod()
+
+    // 方案2：备用的页面滚动方案
+    setTimeout(() => {
+      this.tryPageScrollMethod()
+    }, 200)
+  },
+
+  /**
+   * 尝试使用scroll-top属性滚动
+   */
+  tryScrollTopMethod() {
+    wx.createSelectorQuery()
+      .select('#chat-scroll-view')
+      .scrollOffset((res) => {
+        console.log('📊 scroll-view滚动信息:', res)
+
+        if (res) {
+          // 计算需要滚动的距离
+          wx.createSelectorQuery()
+            .select('#chat-scroll-view')
+            .boundingClientRect((rect) => {
+              if (rect) {
+                const scrollTop = res.scrollHeight - rect.height + 50 // 额外50px确保完全可见
+                console.log('🎯 计算滚动距离:', {
+                  scrollHeight: res.scrollHeight,
+                  viewHeight: rect.height,
+                  targetScrollTop: scrollTop
+                })
+
+                this.setData({
+                  scrollTop: scrollTop
+                }, () => {
+                  console.log('✅ scroll-top方法执行完成')
+                })
+              }
+            })
+            .exec()
+        }
+      })
+      .exec()
+  },
+
+  /**
+   * 尝试页面滚动方法
+   */
+  tryPageScrollMethod() {
+    wx.createSelectorQuery()
+      .select('#chat-container')
+      .boundingClientRect((rect) => {
+        console.log('📏 chat-container信息:', rect)
+
+        if (rect) {
+          wx.pageScrollTo({
+            scrollTop: rect.height,
+            duration: 300,
+            success: () => {
+              console.log('✅ 页面滚动成功')
+            },
+            fail: (error) => {
+              console.error('❌ 页面滚动失败:', error)
+            }
+          })
+        } else {
+          console.warn('⚠️ 无法获取chat-container信息')
+        }
+      })
+      .exec()
   },
 
   /**

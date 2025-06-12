@@ -218,84 +218,98 @@
   close-icon="close"
   round="{{true}}"
   overlay="{{true}}"
-  overlay-style="background: rgba(0,0,0,0.5);"
-  custom-style="width: 90%; max-width: 420px; border-radius: 16px; overflow: hidden;"
+  overlay-style="background: rgba(0,0,0,0.6);"
+  custom-style="width: 92%; max-width: 400px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);"
   transition="fade"
   duration="300"
 >
   <view class="api-key-dialog">
+    <!-- 对话框头部 -->
     <view class="dialog-header">
-      <text class="dialog-title">配置SiliconFlow API Key</text>
-      <text class="dialog-subtitle">配置后可使用真实AI模型进行对话</text>
+      <van-icon name="setting-o" size="24px" color="white" custom-class="header-icon" />
+      <text class="dialog-title">配置 API Key</text>
+      <text class="dialog-subtitle">连接 SiliconFlow 开启 AI 对话</text>
     </view>
 
+    <!-- 对话框内容 -->
     <view class="dialog-content">
+      <!-- API Key输入区域 -->
       <view class="input-section">
-        <view class="input-wrapper">
-          <input
-            class="api-key-input"
-            value="{{apiKeyInput}}"
-            placeholder="请输入以sk-开头的API密钥"
-            type="{{showApiKeyInput ? 'text' : 'password'}}"
-            bindinput="onApiKeyInput"
-            bindblur="onApiKeyChange"
-            maxlength="200"
-            confirm-type="done"
-            cursor-spacing="20"
-            placeholder-style="color: #999; font-size: 14px;"
-          />
-          <view class="input-actions">
-            <van-button
-              icon="{{showApiKeyInput ? 'closed-eye' : 'eye-o'}}"
-              type="default"
-              size="mini"
-              bind:click="onToggleApiKeyInput"
-              custom-class="toggle-btn"
-            >
-              {{showApiKeyInput ? '隐藏' : '显示'}}
-            </van-button>
-          </view>
-        </view>
+        <van-field
+          value="{{apiKeyInput}}"
+          placeholder=" "
+          type="{{showApiKeyInput ? 'password' : 'text'}}"
+          bind:input="onApiKeyInput"
+          bind:blur="onApiKeyChange"
+          maxlength="200"
+          border="{{false}}"
+          custom-class="api-key-field"
+          input-class="api-key-input-inner"
+          right-icon="{{showApiKeyInput ? 'eye-o' : 'closed-eye'}}"
+          bind:click-right-icon="onToggleApiKeyInput"
+          clearable="{{true}}"
+          autosize="{{false}}"
+        />
       </view>
 
-      <view class="tips">
-        <view class="tip-item">
-          <van-icon name="info-o" size="14px" color="#999" />
-          <text class="tip-text">API Key将加密存储在本地，不会上传到服务器</text>
-        </view>
-        <view class="tip-item">
-          <van-icon name="info-o" size="14px" color="#999" />
-          <text class="tip-text">获取API Key：访问 siliconflow.cn 注册并创建</text>
+      <!-- 提示信息 -->
+      <view class="tips-section">
+        <van-notice-bar
+          text="API Key 将加密存储在本地，确保数据安全"
+          mode="closeable"
+          background="linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%)"
+          color="#1296DB"
+          left-icon="shield-o"
+          wrapable="{{true}}"
+          custom-class="security-notice"
+        />
+
+        <view class="help-tip">
+          <van-icon name="question-o" size="16px" color="#1296DB" />
+          <text class="help-text">如何获取 API Key？</text>
+          <text class="help-link" bind:tap="onOpenSiliconFlowSite">访问 siliconflow.cn →</text>
         </view>
       </view>
     </view>
 
+    <!-- 对话框操作按钮 -->
     <view class="dialog-actions">
-      <van-button
-        type="default"
-        size="large"
-        bind:click="onCloseApiKeyDialog"
-        custom-class="cancel-btn"
-      >
-        取消
-      </van-button>
-      <van-button
-        type="primary"
-        size="large"
-        bind:click="onSaveApiKey"
-        custom-class="save-btn"
-      >
-        保存
-      </van-button>
-      <van-button
-        wx:if="{{hasApiKey}}"
-        type="danger"
-        size="large"
-        bind:click="onClearApiKey"
-        custom-class="clear-btn"
-      >
-        清除
-      </van-button>
+      <view class="action-buttons">
+        <van-button
+          type="default"
+          size="large"
+          bind:click="onCloseApiKeyDialog"
+          custom-class="action-btn cancel-btn"
+          round="{{true}}"
+        >
+          取消
+        </van-button>
+        <van-button
+          type="primary"
+          size="large"
+          bind:click="onSaveApiKey"
+          custom-class="action-btn save-btn"
+          round="{{true}}"
+          color="#1296DB"
+        >
+          保存配置
+        </van-button>
+      </view>
+
+      <!-- 清除按钮单独一行 -->
+      <view wx:if="{{hasApiKey}}" class="danger-action">
+        <van-button
+          type="danger"
+          size="large"
+          bind:click="onClearApiKey"
+          custom-class="action-btn clear-btn"
+          round="{{true}}"
+          plain="{{true}}"
+        >
+          <van-icon name="delete-o" size="16px" />
+          清除当前配置
+        </van-button>
+      </view>
     </view>
   </view>
 </van-popup>

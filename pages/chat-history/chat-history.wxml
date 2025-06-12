@@ -118,13 +118,13 @@
       <!-- 简化的操作按钮 -->
       <view class="item-actions">
         <view
-          class="action-btn"
-          bind:tap="onDeleteChat"
+          class="action-btn delete-btn"
+          catch:tap="onDeleteChat"
           data-chat-id="{{item.id}}"
           data-title="{{item.title}}"
           data-index="{{index}}"
-          catch:tap="true"
         >
+          <van-icon name="delete-o" size="14px" color="#ee0a24" />
           删除
         </view>
       </view>

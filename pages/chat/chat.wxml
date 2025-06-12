@@ -49,14 +49,21 @@
 
   <!-- 消息列表 -->
   <scroll-view
+    id="chat-scroll-view"
     class="message-list"
-    scroll-y="true"
+    scroll-y="{{true}}"
     scroll-top="{{scrollTop}}"
-    scroll-with-animation="true"
+    scroll-with-animation="{{true}}"
+    enable-flex="{{true}}"
+    enhanced="{{true}}"
+    show-scrollbar="{{false}}"
+    paging-enabled="{{false}}"
+    fast-deceleration="{{false}}"
   >
     <view
       wx:for="{{messages}}"
       wx:key="id"
+      id="msg-{{item.id}}"
       class="message-item {{item.type}}"
     >
       <!-- 用户消息 -->
@@ -116,14 +123,14 @@
               value="{{item.reasoningExpanded ? ['reasoning'] : []}}"
               bind:change="onReasoningToggle"
               data-message-id="{{item.id}}"
-              custom-class="reasoning-collapse"
+              custom-class="reasoning-collapse {{item.isThinkingModel ? 'deepseek-r1-reasoning' : ''}}"
             >
               <van-collapse-item
-                title="💭 思考过程"
+                title="{{item.isThinkingModel ? '🧠 DeepSeek-R1 思考过程' : '💭 思考过程'}}"
                 name="reasoning"
-                custom-class="reasoning-collapse-item"
+                custom-class="reasoning-collapse-item {{item.isThinkingModel ? 'deepseek-r1-item' : ''}}"
               >
-                <text class="reasoning-text">{{item.reasoningContent}}</text>
+                <text class="reasoning-text {{item.isThinkingModel ? 'deepseek-r1-text' : ''}}">{{item.reasoningContent}}</text>
               </van-collapse-item>
             </van-collapse>
           </view>
@@ -150,7 +157,7 @@
     </view>
 
     <!-- 状态提示 -->
-    <view class="status-tip" wx:if="{{chatStatus !== 'idle'}}">
+    <view id="chat-status-indicator" class="status-tip" wx:if="{{chatStatus !== 'idle'}}">
       <van-loading
         wx:if="{{chatStatus === 'sending'}}"
         type="spinner"

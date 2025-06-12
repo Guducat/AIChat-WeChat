@@ -20,10 +20,37 @@
 }
 
 .action-btn {
+  z-index: 1000 !important;
   min-width: 70px !important;
   height: 36px !important;
   border-radius: 18px !important;
   font-weight: 500 !important;
+}
+
+/* 删除按钮特殊样式 */
+.delete-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  background: #fff5f5 !important;
+  border: 1px solid #ffebee !important;
+  color: #ee0a24 !important;
+  min-width: 80px !important;
+  height: 40px !important;
+  padding: 8px 12px !important;
+  border-radius: 20px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+.delete-btn:active {
+  background: #ffebee !important;
+  transform: scale(0.95) !important;
+  box-shadow: 0 2px 8px rgba(238, 10, 36, 0.2) !important;
 }
 
 /* 搜索框 */
@@ -516,6 +543,15 @@
   .history-item-simple .action-btn {
     padding: 10px 12px;
     font-size: 12px;
+  }
+
+  /* 小屏幕下的删除按钮优化 */
+  .delete-btn {
+    min-width: 70px !important;
+    height: 36px !important;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    gap: 2px !important;
   }
 
   .empty-container {

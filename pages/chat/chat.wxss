@@ -378,6 +378,24 @@
   padding: 8px 0;
 }
 
+/* DeepSeek-R1 特殊样式 */
+.deepseek-r1-reasoning {
+  /* DeepSeek-R1 思考过程容器特殊样式 */
+}
+
+.deepseek-r1-item {
+  background: linear-gradient(135deg, #f0f8ff 0%, #e8f4fd 100%) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(18, 150, 219, 0.1) !important;
+}
+
+.deepseek-r1-text {
+  color: #2c3e50 !important;
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+  font-weight: 400 !important;
+}
+
 /* towxml在思考过程中的样式 */
 .reasoning-collapse-item towxml {
   font-size: 13px !important;

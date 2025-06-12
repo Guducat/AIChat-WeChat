@@ -187,138 +187,135 @@
 
 /* API Key配置对话框 */
 .api-key-dialog {
-  padding: 0;
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
+  position: relative;
 }
 
+/* 对话框头部 */
 .dialog-header {
-  padding: 24px 24px 20px;
+  padding: 32px 24px 28px;
   text-align: center;
   background: linear-gradient(135deg, #1296DB 0%, #0d7bc7 100%);
   color: white;
+  position: relative;
+}
+
+.header-icon {
+  margin-bottom: 12px;
+  opacity: 0.9;
 }
 
 .dialog-title {
   display: block;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 20px;
+  font-weight: 600;
   color: white;
   margin-bottom: 8px;
+  letter-spacing: 0.5px;
 }
 
 .dialog-subtitle {
   display: block;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.4;
+  font-weight: 400;
 }
 
+/* 对话框内容 */
 .dialog-content {
-  padding: 24px;
+  padding: 28px 24px 20px;
   background: white;
 }
 
+/* 输入区域 */
 .input-section {
   margin-bottom: 24px;
 }
 
-.input-wrapper {
-  position: relative;
+.api-key-field {
+  background: #f8f9fa !important;
+  border-radius: 16px !important;
+  border: 1px solid #e8e8e8 !important;
+  transition: all 0.3s ease !important;
+  overflow: hidden !important;
+}
+
+.api-key-field:focus-within {
+  border-color: #1296DB !important;
+  background: white !important;
+  box-shadow: 0 0 0 3px rgba(18, 150, 219, 0.1) !important;
+}
+
+.api-key-input-inner {
+  font-size: 15px !important;
+  color: #333 !important;
+  padding: 16px 20px !important;
+  line-height: 1.4 !important;
+}
+
+/* 提示信息区域 */
+.tips-section {
+  margin-top: 20px;
+}
+
+.security-notice {
+  border-radius: 12px !important;
+  border: 1px solid rgba(18, 150, 219, 0.2) !important;
+  margin-bottom: 16px !important;
+}
+
+.help-tip {
   display: flex;
   align-items: center;
+  padding: 12px 16px;
+  background: #fafbfc;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
 }
 
-.api-key-input {
-  flex: 1;
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 16px 80px 16px 16px;
+.help-text {
   font-size: 14px;
-  line-height: 1.4;
-  color: #333;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.api-key-input:focus {
-  border-color: #1296DB;
-  background: white;
-  box-shadow: 0 0 0 2px rgba(18, 150, 219, 0.1);
-  outline: none;
-}
-
-.input-actions {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-}
-
-.toggle-btn {
-  min-width: 64px !important;
-  height: 36px !important;
-  border-radius: 18px !important;
-  background: white !important;
-  border: 1px solid #e0e0e0 !important;
-  color: #1296DB !important;
-  font-size: 12px !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-  transition: all 0.3s ease !important;
-}
-
-.toggle-btn:active {
-  background: #f0f8ff !important;
-  transform: scale(0.95) !important;
-}
-
-.tips {
-  background: linear-gradient(135deg, #f8f9fa 0%, #f0f8ff 100%);
-  border: 1px solid #e8f4fd;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 8px;
-}
-
-.tip-item {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
-.tip-item:last-child {
-  margin-bottom: 0;
-}
-
-.tip-text {
-  font-size: 13px;
   color: #666;
-  line-height: 1.5;
-  margin-left: 10px;
+  margin-left: 8px;
   flex: 1;
 }
 
+.help-link {
+  font-size: 14px;
+  color: #1296DB;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* 对话框操作区域 */
 .dialog-actions {
-  display: flex;
-  gap: 12px;
-  padding: 20px 24px 24px;
-  background: #fafafa;
+  padding: 20px 24px 28px;
+  background: #fafbfc;
   border-top: 1px solid #f0f0f0;
 }
 
-.cancel-btn,
-.save-btn,
-.clear-btn {
+.action-buttons {
+  align-items: center !important;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.action-buttons > van-button { 
+  flex: 1;
+  justify-content: space-between;
+  min-width: 80px;
+}
+
+.action-btn {
   flex: 1 !important;
-  height: 48px !important;
-  border-radius: 24px !important;
+  height: 50px !important;
   font-size: 16px !important;
   font-weight: 500 !important;
   transition: all 0.3s ease !important;
+  border-radius: 25px !important;
 }
 
 .cancel-btn {
@@ -329,46 +326,105 @@
 
 .cancel-btn:active {
   background: #f8f9fa !important;
+  transform: scale(0.98) !important;
 }
 
 .save-btn {
   background: linear-gradient(135deg, #1296DB 0%, #0d7bc7 100%) !important;
   border: none !important;
   color: white !important;
-  box-shadow: 0 4px 12px rgba(18, 150, 219, 0.3) !important;
+  box-shadow: 0 6px 16px rgba(18, 150, 219, 0.3) !important;
 }
 
 .save-btn:active {
-  transform: translateY(1px) !important;
-  box-shadow: 0 2px 8px rgba(18, 150, 219, 0.3) !important;
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow: 0 3px 12px rgba(18, 150, 219, 0.4) !important;
+}
+
+/* 危险操作区域 */
+.danger-action {
+  display: flex;
+  justify-content: center;
+}
+.danger-action > van-button { 
+  justify-content: space-between;
+  min-width: 120px;
 }
 
 .clear-btn {
-  background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%) !important;
-  border: none !important;
-  color: white !important;
-  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3) !important;
+  width: 100% !important;
+  height: 44px !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  border: 1px solid #ff4757 !important;
+  color: #ff4757 !important;
+  background: white !important;
+  border-radius: 22px !important;
 }
 
 .clear-btn:active {
-  transform: translateY(1px) !important;
-  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3) !important;
+  background: #fff5f5 !important;
+  transform: scale(0.98) !important;
 }
 
 /* 响应式设计 */
 @media (max-width: 375px) {
+  .dialog-header {
+    padding: 28px 20px 24px;
+  }
+
+  .dialog-title {
+    font-size: 18px;
+  }
+
   .dialog-content {
-    padding: 20px;
+    padding: 24px 20px 16px;
   }
 
   .dialog-actions {
-    padding: 16px 20px 20px;
+    padding: 16px 20px 24px;
   }
 
-  .cancel-btn,
-  .save-btn,
-  .clear-btn {
-    height: 44px !important;
+  .action-buttons {
+    margin-bottom: 12px;
+  }
+
+  .action-btn {
+    height: 46px !important;
     font-size: 15px !important;
+  }
+
+  .clear-btn {
+    height: 42px !important;
+    font-size: 14px !important;
+  }
+
+  .api-key-input-inner {
+    padding: 14px 16px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 320px) {
+  .dialog-header {
+    padding: 24px 16px 20px;
+  }
+
+  .dialog-content {
+    padding: 20px 16px 12px;
+  }
+
+  .dialog-actions {
+    padding: 12px 16px 20px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .action-btn {
+    width: 100% !important;
   }
 }

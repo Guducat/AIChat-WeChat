@@ -278,13 +278,37 @@ Page({
    * 继续对话
    */
   onContinueChat(event) {
-    const { chatId } = event.currentTarget.dataset
+    console.log('🔍 继续对话事件触发:', {
+      type: event.type,
+      target: event.target,
+      currentTarget: event.currentTarget,
+      detail: event.detail
+    })
+
+    // 检查是否点击的是删除按钮或其子元素
+    const target = event.target
+    const currentTarget = event.currentTarget
+
+    // 如果点击的是删除按钮区域，不执行继续对话
+    if (target.classList && (
+      target.classList.contains('delete-btn') ||
+      target.classList.contains('action-btn') ||
+      target.closest('.item-actions')
+    )) {
+      console.log('🚫 点击了删除按钮区域，阻止继续对话')
+      return
+    }
+
+    const { chatId } = currentTarget.dataset
     const chat = this.data.chatHistory.find(item => item.id === chatId)
 
     if (chat) {
+      console.log('✅ 继续对话:', { chatId, chat })
       wx.navigateTo({
         url: `/pages/chat/chat?chatId=${chatId}&scenario=${chat.scenario}&model=${chat.model}`
       })
+    } else {
+      console.warn('⚠️ 未找到对话记录:', chatId)
     }
   },
 
@@ -292,7 +316,30 @@ Page({
    * 删除对话（新的确认弹窗方式）
    */
   onDeleteChat(event) {
+    console.log('🗑️ 删除对话事件触发:', {
+      type: event.type,
+      target: event.target,
+      currentTarget: event.currentTarget,
+      dataset: event.currentTarget.dataset
+    })
+
+    // 阻止事件冒泡到父容器
+    if (event.stopPropagation) {
+      event.stopPropagation()
+    }
+
     const { chatId, title, index } = event.currentTarget.dataset
+
+    if (!chatId) {
+      console.error('❌ 删除对话失败：chatId为空')
+      wx.showToast({
+        title: '删除失败：数据错误',
+        icon: 'error'
+      })
+      return
+    }
+
+    console.log('✅ 准备删除对话:', { chatId, title, index })
 
     // 重置滑动位置
     if (typeof index !== 'undefined') {
@@ -301,8 +348,8 @@ Page({
 
     this.setData({
       currentChatId: chatId,
-      currentChatTitle: title,
-      deleteConfirmMessage: `确定要删除对话"${title}"吗？此操作不可恢复。`,
+      currentChatTitle: title || '未命名对话',
+      deleteConfirmMessage: `确定要删除对话"${title || '未命名对话'}"吗？此操作不可恢复。`,
       showDeleteConfirm: true
     })
   },

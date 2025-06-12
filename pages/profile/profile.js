@@ -133,8 +133,13 @@ Page({
    * API Key输入变化（实时输入）
    */
   onApiKeyInput(event) {
-    const value = event.detail.value || ''
-    console.log('API Key输入:', value.length > 0 ? `${value.substring(0, 8)}...` : '空')
+    let value = ''
+    if (typeof event.detail === 'string') {
+      value = event.detail
+    } else if (event.detail && typeof event.detail.value === 'string') {
+      value = event.detail.value
+    }
+    console.log('API Key输入:', value.length > 0 ? `${value.substring(0, 8)}` : '空')
     this.setData({
       apiKeyInput: value
     })
@@ -144,10 +149,27 @@ Page({
    * API Key输入完成（失去焦点）
    */
   onApiKeyChange(event) {
-    const value = event.detail.value || ''
+    let value = ''
+    if (typeof event.detail === 'string') {
+      value = event.detail
+    } else if (event.detail && typeof event.detail.value === 'string') {
+      value = event.detail.value
+    }
     console.log('API Key输入完成:', value.length > 0 ? `${value.substring(0, 8)}...` : '空')
     this.setData({
       apiKeyInput: value
+    })
+  },
+
+  /**
+   * 打开SiliconFlow官网
+   */
+  onOpenSiliconFlowSite() {
+    wx.showModal({
+      title: '获取 API Key',
+      content: '1. 访问 siliconflow.cn 官网\n2. 注册并登录账号\n3. 在控制台创建 API Key\n4. 复制密钥并粘贴到输入框',
+      confirmText: '我知道了',
+      showCancel: false
     })
   },
 
