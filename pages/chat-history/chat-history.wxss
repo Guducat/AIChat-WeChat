@@ -1,8 +1,17 @@
 /* pages/chat-history/chat-history.wxss */
-.history-container {
-  padding: 0 16px 100px;
+
+/* 页面根容器 - 确保背景覆盖整个页面 */
+page {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
+}
+
+.history-container {
+  padding: 0 16px 100px;
+  /* 移除背景设置，让page的背景生效 */
+  min-height: 100vh;
+  /* 确保内容区域透明，显示page背景 */
+  background: transparent;
 }
 
 /* 头部操作栏 */
@@ -128,8 +137,11 @@
 
 /* 对话记录列表 */
 .history-list {
-  height: calc(100vh - 200px);
+  /* 移除固定高度限制，让内容自然撑开 */
+  min-height: calc(100vh - 200px);
   animation: fadeInUp 0.6s ease-out;
+  /* 确保列表内容能够正常滚动 */
+  overflow: visible;
 }
 
 /* 动画效果 */
@@ -253,6 +265,7 @@
   margin-bottom: 12px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2; /* 标准属性 */
   -webkit-box-orient: vertical;
   overflow: hidden;
   letter-spacing: 0.2px;

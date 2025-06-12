@@ -792,18 +792,18 @@ Page({
    */
   isErrorMessage(message) {
     if (!message) return false
-    console.log('检查消息是否为错误消息:', message)
+    // console.log('检查消息是否为错误消息:', message)
 
-    console.log('🔍 检查错误消息:', {
-      messageId: message.id,
-      type: message.type,
-      hasContent: !!message.content,
-      contentLength: message.content ? message.content.length : 0,
-      hasContentNodes: !!message.contentNodes,
-      isError: message.isError,
-      isStreaming: message.isStreaming,
-      timestamp: message.timestamp
-    })
+    // console.log('🔍 检查错误消息:', {
+    //   messageId: message.id,
+    //   type: message.type,
+    //   hasContent: !!message.content,
+    //   contentLength: message.content ? message.content.length : 0,
+    //   hasContentNodes: !!message.contentNodes,
+    //   isError: message.isError,
+    //   isStreaming: message.isStreaming,
+    //   timestamp: message.timestamp
+    // })
 
     // 1. 检查明确的错误标记
     if (message.isError === true) {

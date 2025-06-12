@@ -427,37 +427,95 @@ Page({
    * 显示/隐藏搜索
    */
   onToggleSearch() {
+    const newShowSearch = !this.data.showSearch
+
+    console.log('切换搜索状态:', newShowSearch)
+
     this.setData({
-      showSearch: !this.data.showSearch,
+      showSearch: newShowSearch,
       searchKeyword: '',
       filteredHistory: this.data.chatHistory
     })
+
+    // 如果关闭搜索，确保显示所有记录
+    if (!newShowSearch) {
+      console.log('关闭搜索，恢复显示所有记录:', this.data.chatHistory.length)
+    }
   },
 
   /**
    * 搜索对话
    */
   onSearchInput(event) {
-    const keyword = event.detail.value.toLowerCase()
-    this.setData({
-      searchKeyword: keyword
-    })
+    // 根据Vant Weapp文档，event.detail 为当前输入的值
+    // 使用双向绑定时，searchKeyword会自动更新，但我们仍需要处理搜索逻辑
+    const keyword = (event.detail || '').trim().toLowerCase()
+
+    console.log('搜索关键词:', keyword)
 
     if (!keyword) {
       this.setData({
         filteredHistory: this.data.chatHistory
       })
+      console.log('清空搜索，显示所有记录:', this.data.chatHistory.length)
       return
     }
 
+    this.performSearch(keyword)
+  },
+
+  /**
+   * 执行搜索逻辑
+   */
+  performSearch(keyword) {
     const filtered = this.data.chatHistory.filter(chat => {
-      return chat.title.toLowerCase().includes(keyword) ||
-             chat.scenarioName.toLowerCase().includes(keyword) ||
-             chat.modelName.toLowerCase().includes(keyword)
+      if (!chat) return false
+
+      // 安全地获取搜索字段
+      const title = (chat.title || '').toLowerCase()
+      const scenarioName = (chat.scenarioName || '').toLowerCase()
+      const modelName = (chat.modelName || '').toLowerCase()
+
+      // 扩展搜索范围，包括消息内容
+      let messageContent = ''
+      if (chat.messages && Array.isArray(chat.messages)) {
+        messageContent = chat.messages
+          .map(msg => (msg.content || '').toLowerCase())
+          .join(' ')
+      }
+
+      const isMatch = title.includes(keyword) ||
+                     scenarioName.includes(keyword) ||
+                     modelName.includes(keyword) ||
+                     messageContent.includes(keyword)
+
+      console.log(`搜索匹配检查 - ${chat.title}:`, {
+        keyword,
+        title,
+        scenarioName,
+        modelName,
+        hasMessageContent: messageContent.length > 0,
+        isMatch
+      })
+
+      return isMatch
     })
+
+    console.log('搜索结果:', filtered.length, '条记录')
 
     this.setData({
       filteredHistory: filtered
+    })
+  },
+
+  /**
+   * 清空搜索
+   */
+  onSearchClear() {
+    console.log('清空搜索框')
+    this.setData({
+      searchKeyword: '',
+      filteredHistory: this.data.chatHistory
     })
   },
 

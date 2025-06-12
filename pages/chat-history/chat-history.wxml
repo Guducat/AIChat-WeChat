@@ -2,7 +2,7 @@
 <wxs module="formatter" src="./chat-history.wxs"></wxs>
 <view class="history-container">
   <!-- 头部操作栏 -->
-  <view class="header-actions">
+  <!-- <view class="header-actions">
     <van-button
       size="small"
       type="default"
@@ -22,16 +22,18 @@
     >
       清空
     </van-button>
-  </view>
+  </view> -->
 
   <!-- 搜索框 -->
   <view class="search-container" wx:if="{{showSearch}}">
     <van-field
-      value="{{searchKeyword}}"
+      model:value="{{searchKeyword}}"
       placeholder="搜索对话记录..."
       left-icon="search"
       clearable
       bind:input="onSearchInput"
+      bind:change="onSearchInput"
+      bind:clear="onSearchClear"
       custom-class="search-field"
     />
   </view>
